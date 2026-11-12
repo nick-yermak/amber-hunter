@@ -3,7 +3,18 @@ name: issue-to-pr
 description: Execute an approved Amber Hunter GitHub Issue from scoped plan through tests, independent review, and a human-mergeable PR.
 ---
 # Issue to PR
-1. Confirm GitHub issue is real and `Ready`; gather title, objective, scope, AC, relevant ADRs. If not connected, stop with blocker.
+## Prepare the Issue
+
+1. Create or identify the authorized GitHub Issue. Read its title, objective, scope, and acceptance criteria against the relevant baseline and ADRs. If GitHub is inaccessible, report the blocker.
+2. Resolve the existing Priority and Area field and option IDs from repository metadata. Assign the approved values with `setIssueFieldValue`. See the [GitHub Issue Fields runbook](../../../docs/harness/GITHUB_ISSUE_FIELDS.md).
+3. Confirm membership in Amber Hunter — Development (#3). Add the Issue through Project V2 if it is missing.
+4. Set the Project Status to `Ready` once the owner has approved the scope.
+5. Assign the approved repository milestone.
+6. Read back the Project, Status, Priority, Area, and milestone in a separate request. Compare them with the intended values and resolve any mismatch before implementation.
+
+## Deliver the change
+
+1. Confirm implementation approval and the verified `Ready` state.
 2. Check permission boundaries, branch/worktree isolation, no undocumented scope creep.
 3. Write a concise plan and required verification. Request owner decision for material architecture/dependency change.
 4. Implement only approved scope; record source references for uncertain APIs using official docs/Context7.
