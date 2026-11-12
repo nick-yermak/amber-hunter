@@ -60,9 +60,9 @@ Build a polished, public, free-to-use portfolio and learning application for fin
 
 ## Next phase
 
-1. Integrate Context7 and verify a read-only documentation lookup. Record the observed version, tool inventory, and result.
-2. Integrate Angular CLI MCP next. Verify its read-only setup and defer workspace-dependent checks until Angular is initialized.
-3. Keep `gh` as the primary GitHub interface. Defer the GitHub MCP decision. See the [MCP registry](../harness/MCP_REGISTRY.md).
+1. Use the verified Context7 integration for read-only documentation lookup.
+2. Defer Angular CLI MCP until the Angular scaffold exists. Verify supported commands and effective read-only behavior before activation.
+3. Use `gh` for GitHub work. Revisit GitHub MCP if a concrete capability gap emerges. See the [MCP registry](../harness/MCP_REGISTRY.md).
 
 ## Documentation rules
 

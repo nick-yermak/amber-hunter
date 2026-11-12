@@ -6,8 +6,7 @@ EPIC AH-E01 Foundation & Harness
 - [AH-002 Verify Independent Reviewer Isolation](https://github.com/nick-yermak/amber-hunter/issues/3).
 - Verify local macOS toolchain and record versions/licenses (unassigned planning item).
 - [AH-003 Bootstrap pnpm workspace and minimal GitHub Actions CI](https://github.com/nick-yermak/amber-hunter/issues/6).
-- Connect minimal MCP tooling with read-only smoke tests (unassigned planning item).
-- AH-004 Configure GitHub Project, labels, permissions, branch rules and templates.
+- [AH-004 Document MCP Integration and Post-Merge Cleanup](https://github.com/nick-yermak/amber-hunter/issues/9).
 - AH-005 Add application quality checks once application code exists.
 - AH-006 Demonstrate independent reviewer and PR handoff without automatic merge.
 Acceptance: a real documentation-only Issue passes the Issue-to-PR loop; blocked operations require approval.
