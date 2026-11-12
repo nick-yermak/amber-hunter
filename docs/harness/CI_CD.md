@@ -1,7 +1,24 @@
-# CI/CD and Cloudflare Preview Plan — No Executable Workflows Yet
+# CI/CD and Cloudflare Preview Plan
 
-## Foundations: PR checks
-Formatting, lint, strict TypeScript typecheck, unit tests and production builds on every relevant PR. Fail closed, no skipping failures. Scope jobs using changed paths only after verification, so critical modules are not skipped.
+## Workspace bootstrap
+
+Use Node.js 24.22.3 from `.nvmrc` and pnpm 10.34.9 from `package.json`. From the repository root, verify the toolchain and install:
+
+```sh
+node --version
+corepack --version
+corepack pnpm --version
+corepack pnpm install --frozen-lockfile
+git diff --exit-code -- pnpm-lock.yaml
+```
+
+Corepack reads the pnpm pin directly from `package.json`. If the Node.js distribution omits Corepack, install Corepack 0.36.0 with npm. This version supports Node.js 24.22.3. CI checks for Corepack and installs the same fallback into the runner's temporary directory only when needed.
+
+The **Workspace install** job runs on pull requests targeting `main` with read-only repository contents access. It requires a lockfile, fails on frozen installation errors, and checks that installation leaves the lockfile unchanged. The explicit presence check is needed because pnpm can accept a missing lockfile in a workspace without dependencies. The empty workspace uses no dependency cache. Validate the job on a pull request before configuring any required status check.
+
+## Future PR checks
+
+Add formatting, lint, strict TypeScript typecheck, unit tests and production builds when application code and its tooling exist. Fail closed. Scope jobs using changed paths only after verification, so critical modules are not skipped.
 
 ## Before public MVP
 Playwright smoke tests for core paths; axe accessibility checks; responsive screenshots at 375/768/1440; i18n smoke PL/EN/RU; forecast replay; dependency audit; D1 migration tests; safety-state tests.

@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  workspace-install:
+    name: Workspace install
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - name: Ensure Corepack is available
+        run: |
+          if ! command -v corepack >/dev/null 2>&1; then
+            npm install --prefix "$RUNNER_TEMP/corepack" --no-audit --no-fund corepack@0.36.0
+            echo "$RUNNER_TEMP/corepack/node_modules/.bin" >> "$GITHUB_PATH"
+          fi
+
+      - name: Install workspace
+        run: |
+          node --version
+          corepack --version
+          corepack pnpm --version
+          if [ ! -f pnpm-lock.yaml ]; then
+            echo "Missing pnpm-lock.yaml" >&2
+            exit 1
+          fi
+          corepack pnpm install --frozen-lockfile
+          git diff --exit-code -- pnpm-lock.yaml
