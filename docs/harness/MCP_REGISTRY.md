@@ -1,20 +1,15 @@
-# MCP Registry — Proposed, Not Installed
+# MCP Registry
 
-| MCP | Official source | Purpose | Security/validation |
-| --- | --- | --- | --- |
-| Angular CLI MCP | https://angular.dev/ai/mcp | `get_best_practices`, workspace analysis, builds/tests | CLI in workspace; confirm version/tool list |
-| Context7 | https://context7.com | Library docs matched to actual versions | Check installed Codex connector setup and source output; not a source of project decisions |
-| GitHub MCP | https://github.com/github/github-mcp-server | Issues, PR, read Actions status | Deferred. Main continues to use `gh`. |
+## Context7
 
-## Proposed installation sequence in Codex Desktop
-1. Inspect actual Codex version and MCP configuration mechanism, do not overwrite existing user config.
-2. Connect Context7 through verified official Codex instructions. Request one known Angular document and record its version.
-3. Connect Angular CLI MCP using its documented read-only setup. Verify workspace-dependent tools after Angular initialization.
-4. Capture tested commands, versions, MCP tool inventory, and errors in BOOTSTRAP_AUDIT.
+Context7 is configured at the Codex user level and authenticated through OAuth. Keep authentication in the user's Codex setup. Never commit tokens, credentials, or authentication logs.
 
-## Source links
-- https://angular.dev/ai/mcp
-- https://github.com/github/github-mcp-server/blob/main/docs/server-configuration.md
-- https://context7.com
+[AH-004](https://github.com/nick-yermak/amber-hunter/issues/9) records a successful read-only Angular documentation lookup using `resolve_library_id` followed by `query_docs`. Use Context7 for library API and framework documentation. Match the lookup to the project's dependency version when available and follow approved ADRs for project decisions. See the [Bootstrap Audit](BOOTSTRAP_AUDIT.md).
 
-Do not blindly execute remote code or install an MCP without reviewing requested permissions.
+## Angular CLI MCP
+
+Deferred until the Angular scaffold exists. The proposed setup is project-local and read-only. Before activation, verify the installed CLI version, supported commands and flags, exposed tool inventory, and effective read-only behavior against the [Angular CLI MCP documentation](https://angular.dev/ai/mcp).
+
+## GitHub
+
+Use `gh` for Issues, Projects, PRs, and Actions checks. Revisit GitHub MCP when a concrete capability gap in this workflow has been identified.
