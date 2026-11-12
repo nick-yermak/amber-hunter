@@ -5,8 +5,8 @@ description: Execute an approved Amber Hunter GitHub Issue from scoped plan thro
 # Issue to PR
 ## Prepare the Issue
 
-1. Create or identify the authorized GitHub Issue. Read its title, objective, scope, and acceptance criteria against the relevant baseline and ADRs. If GitHub is inaccessible, report the blocker.
-2. Resolve the existing Priority and Area field and option IDs from repository metadata. Assign the approved values with `setIssueFieldValue`. See the [GitHub Issue Fields runbook](../../../docs/harness/GITHUB_ISSUE_FIELDS.md).
+1. Search open and closed GitHub Issues for the approved identifier and title before creating an Issue. Reuse a matching Issue and search again before retrying an uncertain creation. Read its title, objective, scope, and acceptance criteria against the relevant baseline and ADRs. If GitHub is inaccessible, report the blocker.
+2. Resolve the existing Priority and Area field and option IDs from `repository.issueFields`, including when Project V2 metadata lists empty `options` arrays. Assign the approved values with `setIssueFieldValue`. See the [GitHub Issue Fields runbook](../../../docs/harness/GITHUB_ISSUE_FIELDS.md).
 3. Confirm membership in Amber Hunter — Development (#3). Add the Issue through Project V2 if it is missing.
 4. Set the Project Status to `Ready` once the owner has approved the scope.
 5. Assign the approved repository milestone.
