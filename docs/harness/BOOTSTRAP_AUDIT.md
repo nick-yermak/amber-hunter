@@ -1,4 +1,4 @@
-# Bootstrap Audit — Not Yet Executed
+# Bootstrap Audit — Partial Results
 
 Date: TBD  
 Operator: TBD  
@@ -13,5 +13,6 @@ Workspace path: TBD
 | Angular MCP | Unknown | Not checked | Inventory after workspace exists |
 | Context7 MCP | Unknown | Not checked | Confirm docs retrieval |
 | GitHub MCP / gh | Unknown | Not checked | Read-only test |
-| Reviewer isolated read-only rights | Unknown | Not checked | Verify separately |
+| Reviewer local restrictions | Pass | Five local checks passed on 2026-11-12 | See [Reviewer CLI](REVIEWER.md#verified-local-controls) |
+| Reviewer remote write isolation | Unknown | Sites write-credential capability exposed; backend authorization unverified | See [remote write capability](REVIEWER.md#remote-write-capability) |
 | CI, Preview, D1 bindings | Unknown | Not checked | Defer until environment approval |
