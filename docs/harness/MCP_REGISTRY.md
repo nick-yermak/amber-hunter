@@ -8,7 +8,7 @@ Context7 is configured at the Codex user level and authenticated through OAuth. 
 
 ## Angular CLI MCP
 
-Deferred until the Angular scaffold exists. The proposed setup is project-local and read-only. Before activation, verify the installed CLI version, supported commands and flags, exposed tool inventory, and effective read-only behavior against the [Angular CLI MCP documentation](https://angular.dev/ai/mcp).
+The Angular workspace provides a project-local read-only and local-only server. See the [web development guide](../../apps/web/README.md#angular-cli-mcp) for the verified stdio calls, exposed tools, and Codex configuration example. Codex Desktop activation remains unverified. The restricted Reviewer profile does not use this server.
 
 ## GitHub
 
