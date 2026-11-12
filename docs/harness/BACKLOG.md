@@ -3,7 +3,8 @@
 ## M0 — Harness Ready
 EPIC AH-E01 Foundation & Harness
 - AH-001 Documentation-only harness dry run (see FIRST_TASK.md) — FIRST.
-- AH-002 Verify local macOS toolchain and record versions/licenses.
+- [AH-002 Verify Independent Reviewer Isolation](https://github.com/nick-yermak/amber-hunter/issues/3).
+- Verify local macOS toolchain and record versions/licenses (unassigned planning item).
 - AH-003 Connect minimal MCP tooling with read-only smoke tests.
 - AH-004 Configure GitHub Project, labels, permissions, branch rules and templates.
 - AH-005 Set up quality CI (without application code until owner directs bootstrap).

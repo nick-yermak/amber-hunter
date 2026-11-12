@@ -11,7 +11,7 @@ Verified on 2026-11-12 during [AH-001 — Validate Issue-to-PR Workflow](https:/
 
 - Record the installed Codex Desktop, Node.js and pnpm versions. Check Angular tooling and Angular MCP when the Angular workspace exists.
 - Verify GitHub write permissions for the intended workflow and check GitHub MCP and Context7 access.
-- Verify the independent reviewer's read-only access and complete the AH-001 review and linked PR workflow, with final merge by the owner.
+- Resolve the remaining remote write isolation question documented in [the Reviewer CLI runbook](REVIEWER.md#remote-write-capability).
 - Verify CI, preview and non-production D1 bindings once the environments are approved.
 
 Use the [Bootstrap Audit](BOOTSTRAP_AUDIT.md) to record evidence for the remaining checks. The [approved project baseline](../baseline/PROJECT_STATE.md) records the discovery decisions.
