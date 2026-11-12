@@ -1,5 +1,10 @@
 {
   "name": "amber-hunter",
   "private": true,
-  "packageManager": "pnpm@10.34.9"
+  "packageManager": "pnpm@10.34.9",
+  "scripts": {
+    "web:start": "corepack pnpm --filter web start",
+    "web:build": "corepack pnpm --filter web build",
+    "web:test": "corepack pnpm --filter web test"
+  }
 }

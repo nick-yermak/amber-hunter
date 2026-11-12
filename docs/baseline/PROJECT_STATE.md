@@ -1,10 +1,10 @@
 # Amber Hunter — Project State
 
-**Version:** 1.1
+**Version:** 1.2
 
 **Updated:** 2026-11-12
 
-**Status:** Discovery baseline approved. Workspace and CI bootstrap complete. Angular initialization is pending.
+**Status:** Discovery baseline approved. Workspace and CI bootstrap complete. Angular scaffold implemented on the AH-006 feature branch, pending human merge.
 
 ## Project mission
 Build a polished, public, free-to-use portfolio and learning application for finding favorable amber-hunting conditions on Poland's Baltic coast. Demonstrate Angular, geospatial engineering, data processing, explainable forecasts, quality engineering, and a pragmatic Codex-based AI development harness. Commercial competition and monetization are not primary objectives.
@@ -38,7 +38,8 @@ Build a polished, public, free-to-use portfolio and learning application for fin
 - [AH-002](https://github.com/nick-yermak/amber-hunter/issues/3) completed the Reviewer verification for MVP. The owner approved the [Restricted Local Reviewer](../harness/REVIEWER.md) for read-only local review. Remote-write isolation remains unproven. Authenticated GitHub operations are outside the Reviewer workflow.
 - [AH-003](https://github.com/nick-yermak/amber-hunter/issues/6) is closed and Done. [PR #7](https://github.com/nick-yermak/amber-hunter/pull/7) was squash-merged as `8fe731e4969a2a8a1d79494fce2508a202633741`. The minimal workspace pins Node.js 24.22.3 and pnpm 10.34.9. The [Workspace install check](https://github.com/nick-yermak/amber-hunter/actions/runs/43157400197) passed on that PR. See the [CI bootstrap guide](../harness/CI_CD.md).
 - [Protect main](https://github.com/nick-yermak/amber-hunter/rules/27092966) (ruleset 27092966) is active on `main`. It requires a PR, resolution of review discussions, squash merge, and the **Workspace install** check from GitHub Actions. The configured approving review count is zero. It blocks branch deletion and force-pushes, with no bypass actors, including for administrators. Merge queue and required deployments are disabled. The GitHub API audit passed all nine checks. PR #7 merged before the ruleset was created, and enforcement against a prohibited operation has yet to be observed.
-- Angular initialization is pending. Forecast research is at specification v0.1 and awaits scientific validation. The Baltic Explorer reference images are conceptual design guides.
+- [AH-006](https://github.com/nick-yermak/amber-hunter/issues/14) adds the Angular 22 workspace and five route placeholders. Local build, unit tests, deep links, and Angular CLI MCP stdio calls passed on the feature branch. Codex Desktop activation remains unverified. See the [web development guide](../../apps/web/README.md).
+- Forecast research is at specification v0.1 and awaits scientific validation. The Baltic Explorer reference images are conceptual design guides.
 
 ## Important constraints
 - A high Amber Index is **not** a probability of finding amber.
@@ -61,7 +62,7 @@ Build a polished, public, free-to-use portfolio and learning application for fin
 ## Next phase
 
 1. Use the verified Context7 integration for read-only documentation lookup.
-2. Defer Angular CLI MCP until the Angular scaffold exists. Verify supported commands and effective read-only behavior before activation.
+2. Verify Angular CLI MCP activation and the effective tool allowlist in a Main agent Codex Desktop session.
 3. Use `gh` for GitHub work. Revisit GitHub MCP if a concrete capability gap emerges. See the [MCP registry](../harness/MCP_REGISTRY.md).
 
 ## Documentation rules

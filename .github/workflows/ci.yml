@@ -40,3 +40,9 @@ jobs:
           fi
           corepack pnpm install --frozen-lockfile
           git diff --exit-code -- pnpm-lock.yaml
+
+      - name: Build Angular production bundle
+        run: corepack pnpm web:build
+
+      - name: Run Angular unit tests
+        run: corepack pnpm web:test
