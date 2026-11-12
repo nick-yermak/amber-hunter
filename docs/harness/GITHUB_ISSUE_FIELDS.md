@@ -2,7 +2,13 @@
 
 The Main agent uses authenticated `gh` for authorized Issue updates. Follow the [Harness permissions](PERMISSIONS.md) and keep the [Restricted Local Reviewer](REVIEWER.md) on local diffs and supplied evidence.
 
-Priority and Area are repository Issue fields displayed in Amber Hunter — Development (#3). Use `repository.issueFields` for their definitions and `setIssueFieldValue` for their values. Project Status uses Project V2 item fields. The milestone belongs to the repository Issue.
+Priority and Area are repository Issue fields displayed in Amber Hunter — Development (#3). Project V2 field metadata can list these fields with empty `options` arrays. Retrieve their definitions and choices from `repository.issueFields` using the `IssueFieldSingleSelect` fragment below, then assign values with `setIssueFieldValue`. Resolve current IDs and exact option names before each mutation.
+
+Project Status belongs to the Project V2 item. The milestone belongs to the repository Issue.
+
+## Before creating an Issue
+
+Search open and closed Issues for the approved identifier and title. Inspect any matches and reuse the matching Issue. If creation times out or its result is unclear, search again and check recent Issues before retrying. Stop if you cannot establish whether the first request created an Issue.
 
 ## Resolve the current IDs
 
@@ -81,6 +87,9 @@ query($number: Int!, $valuesAfter: String, $projectsAfter: String) {
 ```
 
 ## Handle failures
+
+- If a shell command cannot resolve `api.github.com` in the Codex sandbox, request one-time network escalation for the specific authorized command. Start with the read-only check `gh api user --jq '.login'`. If escalation is unavailable or denied, report the blocker.
+- Keep token values out of commands, logs, and review evidence. Use the existing authenticated `gh` session.
 
 - If `viewerCanSetFields` is false or GitHub denies an operation, stop and report the operation and permission error to the owner. Keep credentials out of evidence and use the authorized Main agent access.
 - If a field, option, project, or milestone is missing or ambiguous after checking all relevant pages, stop and ask the owner to confirm the intended value. Use existing definitions and options only.
