@@ -14,7 +14,7 @@ git diff --exit-code -- pnpm-lock.yaml
 
 Corepack reads the pnpm pin directly from `package.json`. If the Node.js distribution omits Corepack, install Corepack 0.36.0 with npm. This version supports Node.js 24.22.3. CI checks for Corepack and installs the same fallback into the runner's temporary directory only when needed.
 
-The **Workspace install** job runs on pull requests targeting `main` with read-only repository contents access. It requires a lockfile, fails on frozen installation errors, and checks that installation leaves the lockfile unchanged. The explicit presence check is needed because pnpm can accept a missing lockfile in a workspace without dependencies. The empty workspace uses no dependency cache. Validate the job on a pull request before configuring any required status check.
+The **Workspace install** job runs on pull requests targeting `main` with read-only repository contents access. It requires a lockfile, fails on frozen installation errors, and checks that installation leaves the lockfile unchanged. The explicit presence check is needed because pnpm can accept a missing lockfile in a workspace without dependencies. The empty workspace uses no dependency cache. The job passed on PR #7 and is now required by the [Protect main ruleset](https://github.com/nick-yermak/amber-hunter/rules/27092966).
 
 ## Future PR checks
 
@@ -31,7 +31,7 @@ Playwright smoke tests for core paths; axe accessibility checks; responsive scre
 Never allow PR workflows to access production D1, secrets or write-enabled deploy credentials. Wrangler deploy can publish live code: use safe validation/dry-run processes until a release path has been explicitly approved.
 
 ## Operational checks
-Errors and uptime (low-cost service chosen later), minimal API latency / failure-rate monitoring, quota alerts, source freshness. Verify Cloudflare Workers Free and D1 limits at bootstrap. GitHub private repository Actions minutes vary with plan: check usage and billing before adding expensive browser matrix.
+Errors and uptime (low-cost service chosen later), minimal API latency / failure-rate monitoring, quota alerts, source freshness. Verify Cloudflare Workers Free and D1 limits at bootstrap. Check Actions usage and billing before adding a browser matrix.
 
 ## Required deployment tests
 Check preview binding IDs are non-production; migration target; environment variables; source data attribution; rollback procedure; access restrictions.

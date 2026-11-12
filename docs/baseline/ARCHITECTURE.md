@@ -15,7 +15,7 @@ Angular PWA communicates via typed HTTP contracts with Cloudflare Workers API. W
 - GitHub Issues, Projects, milestones, Pull Requests, Actions.
 - PWA first; Capacitor future.
 
-## Proposed repo shape (not yet created)
+## Proposed application package layout
 ```
 apps/web                  Angular UI
 apps/api                  Cloudflare Workers HTTP endpoints / orchestration
@@ -71,7 +71,7 @@ Independent safety states: AVAILABLE, CAUTION, UNSAFE, RESTRICTED, UNKNOWN (prop
 - Main agent: plan/implement/test/create PR, maintain Issue status within approved scope.
 - Independent reviewer: inspect diff, tests, architecture, accessibility/security; read-only on code.
 - Human: approve epics, major architecture and sensitive changes, merge and production secrets.
-- Planned MCP: Context7, Angular CLI, GitHub MCP or `gh`; confirm actual access before use.
+- MCP sequence and GitHub tooling status are recorded in [Project State](PROJECT_STATE.md#next-phase).
 - Planned external skills: Angular development, frontend design, web design review, Angular bootstrap; review provenance, versions and scripts first.
 - Custom skills: `issue-to-pr`, `design-review`, `forecast-validation`.
 - CI progressively: format/lint/typecheck/unit/build; then E2E, accessibility, screenshots, security and forecast replay.
@@ -90,4 +90,4 @@ Independent safety states: AVAILABLE, CAUTION, UNSAFE, RESTRICTED, UNKNOWN (prop
 - Map tile provider/license and OSM coastline import validation.
 - UI font licenses, design-token finalization and accessibility contrast.
 - Project preview deployment method and exact DB binding strategy.
-- Secret access and GitHub branch protection configuration for private repository.
+- Secret access for protected release environments. See [Project State](PROJECT_STATE.md#verified-state-on-2026-11-12) for the active GitHub ruleset.
