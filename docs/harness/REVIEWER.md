@@ -1,6 +1,6 @@
 # Independent Reviewer CLI
 
-[AH-002](https://github.com/nick-yermak/amber-hunter/issues/3) recorded five passing local checks on 2026-11-12. This setup provides a practical restricted Reviewer for local review. Complete isolation, including isolation from remote writes, remains unverified.
+[AH-002](https://github.com/nick-yermak/amber-hunter/issues/3) recorded five passing local checks on 2026-11-12. The owner approved this Restricted Local Reviewer for MVP local-diff review. Authenticated GitHub access is outside this workflow. Security-sensitive changes require human review before merge. Complete isolation, including isolation from remote writes, remains unverified.
 
 ## Launch
 
@@ -32,6 +32,27 @@ The results apply to the inspected session. Git can still load repository-local 
 
 **UNKNOWN.** The hardened session exposed no direct GitHub tools, but its tool inventory included the built-in Sites API operation `create_source_repository_write_credential`, described as granting push access to a Sites source repository. It was never invoked. Its backend authorization and applicability to this GitHub repository remain unverified. The filesystem sandbox and separate Codex home do not establish equivalent restrictions for built-in services. No GitHub write tests or credential retrieval were performed.
 
-## Proposed ADR-006 clarification
+## Observed tool categories
 
-Owner decision required. Retain the [ADR-006](../adr/ADR-006.md) independent read-only review requirement. A follow-up ADR should decide whether to permit this CLI profile for local-diff review during MVP bootstrap while remote write isolation remains UNKNOWN. Document the exception, its allowed use, and what evidence would retire it. If enforced remote isolation is required, verify that the Reviewer runtime cannot reach write-capable services or owner credentials before relying on it as a security boundary.
+This inventory combines the 2026-11-12 Reviewer CLI tool listings and the hardened session report. Presence reflects the reported session inventory. Service authentication and effective write grants were not exercised.
+
+| Category | Observed interface or evidence | Potential side effects |
+| --- | --- | --- |
+| Shell, Git, GitHub CLI | Shell and Git used for local metadata. `gh` was available in a preliminary Reviewer session. | Remote Git and GitHub CLI operations depend on network and credentials. Local checks do not establish remote denial. |
+| Codex TUI and Node REPL | Session control and scripting interfaces were listed. | Effective restrictions on tool-specific writes and network access were not separately verified. |
+| Computer and browser control | Listed in the initial read-only CLI inventory. Availability in the hardened session was not confirmed. | Authenticated browser sessions could submit forms or modify remote resources if reachable. |
+| Built-in app services | Sites, Document Control, Pets, Plugin Management, and Safety Settings were listed. | These categories expose state-changing operations. Sites exposed the potential Git push path described above. Effective grants remain unknown. |
+| Search and Hotline | Listed as lookup services. | No write capability identified in the observed lookup categories. |
+| Direct GitHub integration | No dedicated GitHub tool appeared in the hardened session inventory. | Other routes remain possible. |
+
+Use local files, local diffs, and supplied evidence for review. Leave remote operations to Main or the owner. Record new tool categories and any changes to local controls when rechecking the profile.
+
+## Proposed AH-002 acceptance criteria
+
+- [ ] Document the Restricted Local Reviewer launch procedure and scope. Confirm the five local controls in the Reviewer session and record the evidence.
+- [ ] Inventory observed tool categories, flag potential external writes, and distinguish tool exposure from verified authorization.
+- [ ] Document that authenticated GitHub access is outside the MVP Reviewer workflow. Record remote write isolation, including Sites applicability and grants, as UNKNOWN unless supported by evidence.
+- [ ] Record the [ADR-006 clarification](../adr/ADR-006.md#proposed-clarification--restricted-local-reviewer-for-mvp), the owner-approved MVP scope, and the human review requirement for security-sensitive changes.
+- [ ] Verify Markdown formatting, internal links, and consistency across the Harness documents. Keep the verification evidence free of credentials and avoid remote write tests.
+
+These criteria are proposed for [Issue #3](https://github.com/nick-yermak/amber-hunter/issues/3).

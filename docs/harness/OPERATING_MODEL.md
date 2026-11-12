@@ -3,7 +3,8 @@
 ## Roles
 - **Owner:** approves epics, architectural shifts, production credentials, protected settings and merge. Controls publication.
 - **Main agent:** prepares Issues from approved epics; works on Ready Issue only; plans, implements, tests, proposes PR; can update allowed statuses after permissions verified.
-- **Independent reviewer:** separate context, reads actual diff + relevant requirements and test evidence; read-only code and credentials; produces findings by severity; does not self-merge.
+- **Restricted Local Reviewer (MVP)** uses a separate CLI session with an effective `read-only` sandbox and `never` approval policy. Reviews local diffs, supplied requirements, and test evidence, then returns findings by severity in the session. Authenticated GitHub access is outside this workflow. See the [Reviewer runbook](REVIEWER.md).
+- **Human review** is required before merging security-sensitive changes. The local Reviewer can supply findings. The owner retains merge authority.
 
 ## Issue workflow
 Backlog -> Ready (owner-approved scope) -> In Progress -> In Review -> Done (after human merge / Issue closure). Blocked is a label. Main agent does not approve its own architecture changes. Limit automated fix/review loops to two; then escalate.

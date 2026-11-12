@@ -2,9 +2,9 @@
 
 | MCP | Official source | Purpose | Security/validation |
 | --- | --- | --- | --- |
-| Angular CLI MCP | https://angular.dev/ai/mcp | `get_best_practices`, workspace analysis, builds/tests | CLI in workspace; reviewer use `--read-only`; confirm version/tool list |
+| Angular CLI MCP | https://angular.dev/ai/mcp | `get_best_practices`, workspace analysis, builds/tests | CLI in workspace; confirm version/tool list |
 | Context7 | https://context7.com | Library docs matched to actual versions | Check installed Codex connector setup and source output; not a source of project decisions |
-| GitHub MCP | https://github.com/github/github-mcp-server | Issues, PR, read Actions status | Limit toolsets and credentials; reviewer read-only; verify Projects writes or use `gh` |
+| GitHub MCP | https://github.com/github/github-mcp-server | Issues, PR, read Actions status | For Main only in the MVP workflow; limit toolsets and credentials; verify Projects writes or use `gh` |
 
 ## Proposed installation sequence in Codex Desktop
 1. Inspect actual Codex version and MCP configuration mechanism, do not overwrite existing user config.
