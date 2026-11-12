@@ -1,8 +1,10 @@
 # Amber Hunter — Project State
 
-**Version:** 1.0  
-**Updated:** 2026-11-11  
-**Status:** Discovery baseline approved; preparing Codex handoff. No application implementation has started.
+**Version:** 1.1
+
+**Updated:** 2026-11-12
+
+**Status:** Discovery baseline approved. Workspace and CI bootstrap complete. Angular initialization is pending.
 
 ## Project mission
 Build a polished, public, free-to-use portfolio and learning application for finding favorable amber-hunting conditions on Poland's Baltic coast. Demonstrate Angular, geospatial engineering, data processing, explainable forecasts, quality engineering, and a pragmatic Codex-based AI development harness. Commercial competition and monetization are not primary objectives.
@@ -23,19 +25,20 @@ Build a polished, public, free-to-use portfolio and learning application for fin
 | Delivery | GitHub Projects/Issues/milestones/PR, GitHub Actions, owner-controlled merge |
 | Harness | Balanced: main implementation agent + independent read-only reviewer, curated skills and MCP; risk-based permissions |
 | Budget | Target approximately 0 PLN/month (verify current free tiers/limits) |
-| Design | Baltic Explorer; approved reference images in `design/references/` |
+| Design | Baltic Explorer; approved reference images in `docs/design/references/` |
 | Authentication | Anonymous MVP; authentication/community later |
 | Language | PL / EN / RU, browser detection and manual switching |
 | Forecast | Experimental Amber Index 0–100; Open-Meteo primary, Copernicus research; 72h conditions; three-hour refresh checks; independent safety checks |
 | Content | Amber Academy static articles for MVP; CMS later |
 
-## Current stage
-- Product discovery: complete enough for MVP planning.
-- Forecast engine: research/specification v0.1, **not scientifically validated**.
-- Visual direction: approved; generated images are references, not pixel-perfect specifications.
-- Harness: architecture proposed and largely agreed; tooling/installations and permissions **not verified**.
-- Repository: not known to be created; do not assume GitHub, MCP, or deployments are connected.
-- No application code has been requested or written in this phase.
+## Verified state on 2026-11-12
+
+- The [repository](https://github.com/nick-yermak/amber-hunter) is public and its default branch is `main`.
+- [AH-001](https://github.com/nick-yermak/amber-hunter/issues/1) completed the Issue-to-PR workflow dry run.
+- [AH-002](https://github.com/nick-yermak/amber-hunter/issues/3) completed the Reviewer verification for MVP. The owner approved the [Restricted Local Reviewer](../harness/REVIEWER.md) for read-only local review. Remote-write isolation remains unproven. Authenticated GitHub operations are outside the Reviewer workflow.
+- [AH-003](https://github.com/nick-yermak/amber-hunter/issues/6) is closed and Done. [PR #7](https://github.com/nick-yermak/amber-hunter/pull/7) was squash-merged as `8fe731e4969a2a8a1d79494fce2508a202633741`. The minimal workspace pins Node.js 24.22.3 and pnpm 10.34.9. The [Workspace install check](https://github.com/nick-yermak/amber-hunter/actions/runs/43157400197) passed on that PR. See the [CI bootstrap guide](../harness/CI_CD.md).
+- [Protect main](https://github.com/nick-yermak/amber-hunter/rules/27092966) (ruleset 27092966) is active on `main`. It requires a PR, resolution of review discussions, squash merge, and the **Workspace install** check from GitHub Actions. The configured approving review count is zero. It blocks branch deletion and force-pushes, with no bypass actors, including for administrators. Merge queue and required deployments are disabled. The GitHub API audit passed all nine checks. PR #7 merged before the ruleset was created, and enforcement against a prohibited operation has yet to be observed.
+- Angular initialization is pending. Forecast research is at specification v0.1 and awaits scientific validation. The Baltic Explorer reference images are conceptual design guides.
 
 ## Important constraints
 - A high Amber Index is **not** a probability of finding amber.
@@ -46,7 +49,7 @@ Build a polished, public, free-to-use portfolio and learning application for fin
 - Do not write implementation code until explicitly requested.
 
 ## Outstanding decisions and research
-1. Confirm actual tool versions/availability on owner's Mac and repo permissions.
+1. Verify the Codex Desktop version and the effective permissions of each MCP integration before use.
 2. Verify licensing, API limits, map tile terms, attribution and current pricing.
 3. Approve exact UI tokens after implementation contrast/accessibility review.
 4. Validate coastline geometries and segment length (250–500 m is a proposed starting range, not an approved scientific resolution).
@@ -55,11 +58,12 @@ Build a polished, public, free-to-use portfolio and learning application for fin
 7. Decide hosting details for per-PR preview and test data bindings.
 8. Amber Quest remains a future separate discovery track, non-blocking for MVP.
 
-## Next actions
-1. Place this package and three image references in ChatGPT Project Files and later the GitHub repo.
-2. Prepare Codex handoff: AGENTS.md, ADRs, skills/MCP registry, risk policy, CI definitions, issue/PR templates and first backlog.
-3. Validate the harness on a small Issue-to-PR task before implementing features.
-4. Start foundation, app shell, map and weather data research in prioritized epics.
+## Next phase
+
+1. Integrate Context7 and verify a read-only documentation lookup. Record the observed version, tool inventory, and result.
+2. Integrate Angular CLI MCP next. Verify its read-only setup and defer workspace-dependent checks until Angular is initialized.
+3. Keep `gh` as the primary GitHub interface. Defer the GitHub MCP decision. See the [MCP registry](../harness/MCP_REGISTRY.md).
 
 ## Documentation rules
-These documents reflect decisions through 2026-11-11. If new approved decisions differ, update these files and record an ADR when architectural. Code and approved ADRs in GitHub become the authoritative implementation state once the repository exists.
+
+Update this snapshot when verified project state changes. Repository implementation and approved ADRs govern technical decisions. Record architectural changes through the ADR process.
