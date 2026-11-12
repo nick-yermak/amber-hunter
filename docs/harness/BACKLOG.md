@@ -5,9 +5,10 @@ EPIC AH-E01 Foundation & Harness
 - AH-001 Documentation-only harness dry run (see FIRST_TASK.md) — FIRST.
 - [AH-002 Verify Independent Reviewer Isolation](https://github.com/nick-yermak/amber-hunter/issues/3).
 - Verify local macOS toolchain and record versions/licenses (unassigned planning item).
-- AH-003 Connect minimal MCP tooling with read-only smoke tests.
+- [AH-003 Bootstrap pnpm workspace and minimal GitHub Actions CI](https://github.com/nick-yermak/amber-hunter/issues/6).
+- Connect minimal MCP tooling with read-only smoke tests (unassigned planning item).
 - AH-004 Configure GitHub Project, labels, permissions, branch rules and templates.
-- AH-005 Set up quality CI (without application code until owner directs bootstrap).
+- AH-005 Add application quality checks once application code exists.
 - AH-006 Demonstrate independent reviewer and PR handoff without automatic merge.
 Acceptance: a real documentation-only Issue passes the Issue-to-PR loop; blocked operations require approval.
 
