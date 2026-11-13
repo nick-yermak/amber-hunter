@@ -19,6 +19,8 @@ Build a polished public Angular/Cloudflare portfolio and learning app for Baltic
 ## Mandatory context
 Read `docs/baseline/PROJECT_STATE.md` before starting a new issue. Open only task-relevant sections of `docs/baseline/PRD.md`, `ARCHITECTURE.md`, `DESIGN_SYSTEM.md` and accepted ADRs. Read the related GitHub Issue and its Acceptance Criteria. Source-of-truth hierarchy: approved ADRs + current repository implementation, then approved baseline docs, then Issue scope, then agent proposals; stop if these materially conflict.
 
+For Angular work, follow the [Frontend Conventions](docs/engineering/FRONTEND_CONVENTIONS.md).
+
 ## Stack constraints
 Angular, TypeScript strict, standalone components, Signals; Tailwind, Angular CDK, Lucide, MapLibre; Cloudflare Workers + D1 + Static Assets; pnpm workspaces without Nx; responsive PWA first, Capacitor later. No heavyweight state layer or dependency without issue justification.
 
