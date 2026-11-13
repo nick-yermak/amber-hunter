@@ -1,1 +1,24 @@
-/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss" source("./app");
+@import "./styles/tokens.css";
+
+@font-face {
+  font-family: 'Inter Variable';
+  src: url('./styles/fonts/InterVariable.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+}

@@ -13,23 +13,28 @@ Quiet, exploratory and practical. Scandinavian minimalism inspired by the clarit
 
 Generated images are **concept references**. They include illustrative weather numbers, indices, route conditions and potential map inaccuracies. Never use displayed numeric values as real data. Do not require pixel-perfect reproduction; evaluate hierarchy, layout, density, typography and visual character.
 
-## Proposed color tokens (HEX)
-| Token | Value | Role |
-|---|---|---|
-| canvas | `#FAFAF8` | Main light background |
-| surface | `#FFFFFF` | Cards and panels |
-| sea-mist | `#E6EEF0` | Secondary backgrounds |
-| sea-slate | `#486F7B` | Marine accent |
-| deep-ocean | `#223E49` | Strong navigation or section contrast |
-| amber | `#C48A36` | Small warm highlights |
-| warm-sand | `#F0E9DD` | Warm secondary surface |
-| ink | `#29383E` | Main text |
-| muted | `#75848A` | Supporting text (contrast verification required) |
+## Light-theme tokens
 
-All hex values are preliminary; validate contrast per WCAG before implementation. Prefer semantic tokens over arbitrary literals. Safety colors must be a separate semantic system and never rely on color alone.
+Define semantic tokens in [tokens.css](../../apps/web/src/styles/tokens.css) with Tailwind v4 `@theme`. Use semantic utilities such as `bg-surface`, `text-muted` and `rounded-card` in templates. The Angular app loads Tailwind through its project-local PostCSS configuration and uses Preflight and the standard Tailwind spacing scale.
+
+| Token suffix | Value | Role |
+|---|---|---|
+| `canvas` | `#FAFAF8` | Main background |
+| `surface` | `#FFFFFF` | Cards and panels |
+| `surface-cool` | `#E6EEF0` | Cool secondary surface |
+| `surface-warm` | `#F0E9DD` | Warm secondary surface |
+| `ink` | `#29383E` | Primary text |
+| `muted` | `#52656D` | Secondary text |
+| `action` | `#486F7B` | Marine action text |
+| `action-strong` | `#223E49` | Emphasized marine action text |
+| `amber-accent` | `#C48A36` | Decorative highlights |
+| `divider` | `#E6EEF0` | Decorative boundaries |
+| `focus` | `#223E49` | Keyboard focus outline |
+
+The placeholder uses ink, muted, action and strong action on white at 12.14:1, 6.10:1, 5.48:1 and 11.33:1, respectively. Default ink on canvas is 11.62:1. The 2px focus outline has 11.33:1 contrast against white and 10.84:1 against canvas. The link is underlined and has a 44px minimum height. The divider is decorative. Reserve a separate semantic system for safety states and pair future safety colors with other cues.
 
 ## Typography
-- Candidate: Inter; alternative Geist Sans only after checking full PL/EN/RU glyph coverage and licensing.
+- `--font-sans` uses locally hosted [Inter Variable v4.1](https://github.com/rsms/inter/releases/tag/v4.1) with system sans-serif fallbacks. The upright WOFF2 covers weights 100–900. Keep the [SIL Open Font License 1.1](../../apps/web/public/licenses/Inter-OFL.txt) with the distributed font. Chrome verified the English and Russian alphabets and Polish diacritics without fallback.
 - Sans-serif with expressive medium/semibold headings; clear UI hierarchy.
 - Body baseline approximately 16px / 1.5 line height; small captions 12–14px only when accessible.
 - Indicative large heading: 30–36px mobile, 40–48px desktop.
@@ -37,7 +42,7 @@ All hex values are preliminary; validate contrast per WCAG before implementation
 
 ## Layout tokens
 - 4px-based spacing: 4, 8, 12, 16, 24, 32, 48px.
-- Cards: about 16px radius; buttons: about 12px; inputs: 10–12px.
+- Use `rounded-card` (1rem) and `rounded-control` (0.75rem) for the baseline radii.
 - Standard card padding 16–24px; content maximum around 1200px, subject to screen needs.
 - Interactive touch targets at least 44×44px.
 - Thin borders, almost no drop shadows, moderate density, minimal animation and reduced-motion support.
