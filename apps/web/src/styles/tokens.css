@@ -1,0 +1,16 @@
+@theme static {
+  --color-canvas: #fafaf8;
+  --color-surface: #ffffff;
+  --color-surface-cool: #e6eef0;
+  --color-surface-warm: #f0e9dd;
+  --color-ink: #29383e;
+  --color-muted: #52656d;
+  --color-action: #486f7b;
+  --color-action-strong: #223e49;
+  --color-amber-accent: #c48a36;
+  --color-divider: #e6eef0;
+  --color-focus: #223e49;
+  --font-sans: 'Inter Variable', system-ui, sans-serif;
+  --radius-card: 1rem;
+  --radius-control: 0.75rem;
+}
