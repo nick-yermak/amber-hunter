@@ -14,12 +14,10 @@ description: Execute an approved Amber Hunter GitHub Issue from scoped plan thro
 
 ## Deliver the change
 
-1. Confirm implementation approval and the verified `Ready` state.
-2. Check permission boundaries, branch/worktree isolation, no undocumented scope creep.
-3. Write a concise plan and required verification. Request owner decision for material architecture/dependency change.
-4. Implement only approved scope; record source references for uncertain APIs using official docs/Context7.
-5. Run existing checks; never conceal failures; do not fabricate checks when dependencies unavailable.
-6. Request independent read-only review of actual diff, resolve high-priority findings or report blockers.
-7. Prepare PR with Issue link, evidence, tradeoffs, screenshots when UI, review summary. Create external PR only if permission verified.
-8. Update permissible GitHub Project states and hand off the PR to the owner for merge. Never merge or deploy to production.
-9. After a human merge, follow [Post-Merge Cleanup](../../../docs/harness/OPERATING_MODEL.md#post-merge-cleanup) with owner confirmation before destructive operations. Preserve worktrees in use by active Codex sessions.
+1. Verify owner-approved scope and Project status Ready. Together they authorize routine scoped work within effective permissions.
+2. Record the scoped plan, checks and base SHA. Implement on an issue-specific branch or worktree and run the existing checks.
+3. Prepare a linked PR with the required evidence. Open it when authorized and keep it draft while evidence is pending. Verify permitted Project writes with separate reads.
+4. Use the [Reviewer handoff](../../../docs/harness/REVIEWER.md#review-handoff) for the exact base/head. The owner launches the separate Terminal Reviewer. Nested invocation is blocked.
+5. Follow the [Controlled Autonomy workflow](../../../docs/harness/OPERATING_MODEL.md#issue-workflow) for failure recovery and stop conditions. Allow at most two scoped fix-and-review cycles after initial review. Rerun checks and verify review of the latest diff each time.
+6. Record actual local checks, CI status, reviewed SHAs, findings, verdict, evidence and blockers. Hand off the PR to the owner for merge.
+7. After a human merge, follow [Post-Merge Cleanup](../../../docs/harness/OPERATING_MODEL.md#post-merge-cleanup) with owner confirmation before destructive operations. Preserve worktrees in use by active Codex sessions.

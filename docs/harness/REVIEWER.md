@@ -2,6 +2,12 @@
 
 [AH-002](https://github.com/nick-yermak/amber-hunter/issues/3) recorded five passing local checks on 2026-11-12. The owner approved this Restricted Local Reviewer for MVP local-diff review. Authenticated GitHub access is outside this workflow. Security-sensitive changes require human review before merge. Complete isolation, including isolation from remote writes, remains unverified.
 
+## Invocation status
+
+The manual Terminal workflow was verified locally with Codex CLI 0.167.2. A separate Restricted Local Reviewer reviewed a historical diff and returned exact base/head SHAs, findings and a verdict. That result covers the historical diff only. The installed CLI supports non-interactive `exec`, JSONL and explicit sandbox and approval settings.
+
+Nested invocation from Main is **BLOCKED**. The CLI exited with code 1 at app-server client initialization (`Operation not permitted (os error 1)`) and emitted no JSONL events. The precise cause is **UNKNOWN**. Independent review in v1 uses the owner-launched Terminal fallback. Keep the effective sandbox and approval policy in place.
+
 ## Launch
 
 From Terminal, start a new Codex CLI session using the separate Reviewer profile. Substitute the absolute path to the checkout containing the diff.
@@ -15,6 +21,14 @@ env -u SSH_AUTH_SOCK \
 ```
 
 In the CLI session, confirm the effective sandbox and approval policy before reviewing. Check the environment and Git configuration using read-only metadata and report only presence or absence. Proceed only after all five local checks pass. For the credential helper check, suppress values and report only whether matching entries or errors were found. Inspect the local diff, relevant requirements, and supplied test evidence. Return findings in the session. Leave GitHub operations to Main or the owner.
+
+## Review handoff
+
+Main supplies the checkout path, Issue scope and acceptance criteria, exact full base and head SHAs defining the PR diff, and check commands with observed results. The Reviewer verifies the commits and checks the local diff between them. Missing or mismatched commits block the review.
+
+The Reviewer returns the full reviewed base/head SHAs, findings with severity (Blocker, Major, Minor, Suggestion), file and line where applicable, supporting evidence, and a verdict (Pass, Changes requested, or Blocked). Include any unverified checks and explicitly record when there are no findings. The owner returns the result to Main.
+
+Main compares both reviewed SHAs with the current PR diff before accepting the result. A changed base/head pair requires a fresh review. A failed launch, timeout or missing result leaves independent review pending. Follow the [two-cycle workflow](OPERATING_MODEL.md#issue-workflow) for scoped fixes.
 
 ## Verified local controls
 
