@@ -40,7 +40,7 @@ Run Responsive App Shell & Navigation as the first Controlled Autonomy pilot onc
 
 ## GitHub protection and CI baseline
 
-The externally verified audit snapshot dated 2026-11-14 records [Protect main](https://github.com/nick-yermak/amber-hunter/rules/27092966) (ruleset #27092966) as active. It requires a pull request, squash merge, resolution of review threads, and the `Workspace install` check. It has no bypass actors and requires zero approving reviews.
+An external audit on 2026-11-14 observed [Protect main](https://github.com/nick-yermak/amber-hunter/rules/27092966) (ruleset #27092966) as active. It requires a pull request, squash merge, resolution of review threads, and the `Workspace install` check. It has no bypass actors and requires zero approving reviews. These observations describe the configuration on the audit date. The link shows the live ruleset, which can change.
 
 The [CI workflow](../../.github/workflows/ci.yml) installs dependencies with a frozen lockfile, builds the frontend for production, and runs unit tests. AH-009 PR CI execution is pending. Only the Human Owner performs the final merge. This is an operational requirement, independent of the ruleset's approving review count.
 
