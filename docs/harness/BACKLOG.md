@@ -9,13 +9,14 @@ EPIC AH-E01 Foundation & Harness
 - [AH-004 Document MCP Integration and Post-Merge Cleanup](https://github.com/nick-yermak/amber-hunter/issues/9).
 - AH-005 Add application quality checks once application code exists.
 - AH-006 Demonstrate independent reviewer and PR handoff without automatic merge.
-Acceptance: a real documentation-only Issue passes the Issue-to-PR loop; blocked operations require approval.
+- [AH-009 — Harness Autonomy v1](https://github.com/nick-yermak/amber-hunter/issues/21).
+Acceptance: a real documentation-only Issue passes the Issue-to-PR loop; actions outside the approved scope require explicit owner approval. If the sandbox or platform blocks an operation, stop and report the evidence. Owner approval alone does not remove a technical restriction.
 
 ## M1 — App Shell
 EPIC AH-E02 Angular PWA & Baltic Explorer UI
 - AH-101 Bootstrap pnpm workspaces + Angular + Worker *after owner approval*.
 - AH-102 Define accessible semantic design tokens / font fallback.
-- AH-103 Implement app shell, responsive navigation, PL/EN/RU plumbing.
+- AH-010 — Responsive App Shell & Navigation, the first [Controlled Autonomy pilot](OPERATING_MODEL.md#ah-010-pilot). Preserve the planned PL/EN/RU localization work.
 - AH-104 Hero/Home UI with synthetic demo data visibly marked.
 
 ## M2 — Data & Map

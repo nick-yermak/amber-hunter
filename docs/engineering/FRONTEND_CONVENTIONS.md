@@ -23,7 +23,7 @@ Use short names that describe responsibility. Omit the `Component` suffix and av
 
 Use these boundaries under `apps/web/src/app/` as code is added.
 
-- **Core** owns the application shell and application-wide infrastructure. For AH-009, place `Header` in `core/header/header.ts` and `MobileNavigation` in `core/mobile-navigation/mobile-navigation.ts`. Keep root composition, configuration, and route registration in the existing app entry files.
+- **Core** owns the application shell and application-wide infrastructure. For AH-010, place `Header` in `core/header/header.ts` and `MobileNavigation` in `core/mobile-navigation/mobile-navigation.ts`. Keep root composition, configuration, and route registration in the existing app entry files.
 - **Features** own product areas such as Home, Map, Beaches, and Academy. Keep each area's components, services, pipes, directives, types, state, and utilities near their consumers. For example, start `BeachCard` in Beaches. Cross-feature imports must target an explicitly exposed entry point, such as a named route export. Avoid private implementation imports and circular dependencies. A direct import of an exposed file is sufficient.
 - **Shared** contains feature-independent code with demonstrated reuse or an explicit architectural boundary. Candidates include generic UI primitives, directives, pipes, and pure utilities. Shared code must be usable without importing feature internals. Keep services and types with their owner by default. Cross-package domain and transport contracts follow the [architecture baseline](../baseline/ARCHITECTURE.md).
 
