@@ -10,6 +10,21 @@
 }
 
 @layer base {
+  html {
+    --focus-scroll-clearance: 0.5rem;
+    scroll-padding-block-end: var(--focus-scroll-clearance);
+  }
+
+  @media (width < theme(--breakpoint-md)) {
+    html {
+      /* Reserve the sticky panel's target height, padding and border when scrolling focus. */
+      scroll-padding-block-end: calc(
+        var(--focus-scroll-clearance) + --spacing(11) + --spacing(2) + 1px +
+        max(--spacing(2), env(safe-area-inset-bottom))
+      );
+    }
+  }
+
   body {
     background-color: var(--color-canvas);
     color: var(--color-ink);
