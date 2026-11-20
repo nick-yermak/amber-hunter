@@ -11,7 +11,10 @@ import { MobileNavigation } from './core/mobile-navigation/mobile-navigation';
   template: `
     <button
       type="button"
-      class="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-20
+      class="sr-only focus:not-sr-only focus:fixed focus:z-20
+             focus:start-[max(1rem,calc(env(safe-area-inset-left)+0.5rem))]
+             focus:top-[max(1rem,calc(env(safe-area-inset-top)+0.5rem))]
+             rtl:focus:start-[max(1rem,calc(env(safe-area-inset-right)+0.5rem))]
              focus:rounded-control focus:bg-surface focus:px-4 focus:py-3 focus:text-action-strong"
       (click)="mainContent.focus()"
     >Skip to content</button>
