@@ -1,7 +1,14 @@
+import { Location } from '@angular/common';
+import { provideLocationMocks } from '@angular/common/testing';
+import { NavigationEnd, Router } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { TestBed } from '@angular/core/testing';
+import { filter, firstValueFrom } from 'rxjs';
 import { vi } from 'vitest';
-import { ExploreMap } from './explore-map';
-import { mapSampleForecasts } from './map-sample-forecasts';
+import { appConfig } from '../../app.config';
+import { EXPLORE_MAP_FIXTURES, ExploreMap } from './explore-map';
+import { pilotBeaches } from '../beaches/pilot-beaches';
+import { sampleBeachForecasts } from '../beaches/sample-beach-forecasts';
 
 const engine = vi.hoisted(() => ({
   fail: false,
@@ -39,6 +46,7 @@ vi.mock('maplibre-gl', () => ({
 
 describe('Explore Map', () => {
   beforeEach(() => {
+    TestBed.configureTestingModule({ providers: [...appConfig.providers, provideLocationMocks()] });
     engine.fail = false;
     engine.eventHandlers.clear();
     engine.remove.mockClear();
@@ -63,11 +71,12 @@ describe('Explore Map', () => {
     return { fixture, host, preview, beach };
   }
 
-  it('uses one selection for HTML controls, map markers and the preview', () => {
+  it('uses one selection for HTML controls, map markers and the preview', async () => {
     const { fixture, host, beach, preview } = createMap();
     expect(preview()).toContain('Select a beach');
 
     beach('Sobieszewo').click();
+    await fixture.whenStable();
     fixture.detectChanges();
     expect(host.querySelector('[aria-label="Sobieszewo"]')?.getAttribute('aria-pressed')).toBe('true');
     expect(preview()).toContain('SAMPLE DATA');
@@ -76,6 +85,7 @@ describe('Explore Map', () => {
     expect(preview()).toContain('7 Oct 2030');
 
     host.querySelector<HTMLButtonElement>('button[aria-label="Mikoszewo"]')!.click();
+    await fixture.whenStable();
     fixture.detectChanges();
     expect(beach('Sobieszewo').getAttribute('aria-pressed')).toBe('false');
     expect(beach('Mikoszewo').getAttribute('aria-pressed')).toBe('true');
@@ -85,30 +95,90 @@ describe('Explore Map', () => {
     expect(host.querySelector('[aria-labelledby="beach-preview-heading"] button')).toBeNull();
   });
 
-  it.each(['unsafe', 'restricted', 'unknown'] as const)('shows independent %s safety even for a high current index', (safety) => {
-    const { fixture, host, beach, preview } = createMap();
-    fixture.componentRef.setInput('forecasts', {
-      sobieszewo: { ...mapSampleForecasts['sobieszewo']!, index: 100, safety },
+  it('uses the URL for direct selection, list and marker clicks, and Back/Forward', async () => {
+    const harness = await RouterTestingHarness.create('/map');
+    const router = TestBed.inject(Router);
+    const location = TestBed.inject(Location);
+    router.setUpLocationChangeListener();
+
+    const page = harness.routeNativeElement!;
+    const marker = (name: string) => page.querySelector<HTMLButtonElement>(`button[aria-label="${name}"]`)!;
+    const list = (name: string) => Array.from(page.querySelectorAll<HTMLButtonElement>('aside button'))
+      .find((button) => button.textContent?.includes(name))!;
+    const expectSelected = (name: string) => {
+      expect(marker(name).getAttribute('aria-pressed')).toBe('true');
+      expect(list(name).getAttribute('aria-pressed')).toBe('true');
+      expect(page.querySelector('#beach-preview-heading')?.textContent).toBe(name);
+    };
+
+    expect(page.querySelector('[aria-pressed="true"]')).toBeNull();
+    await harness.navigateByUrl('/map?beach=invalid&extra=kept');
+    expect(page.querySelector('[aria-pressed="true"]')).toBeNull();
+    await harness.navigateByUrl('/map?beach=sobieszewo&extra=kept');
+    expectSelected('Sobieszewo');
+
+    list('Mikoszewo').click();
+    await harness.fixture.whenStable();
+    expect(router.url).toBe('/map?beach=mikoszewo&extra=kept');
+    expectSelected('Mikoszewo');
+
+    marker('Orle').click();
+    await harness.fixture.whenStable();
+    expect(router.url).toBe('/map?beach=orle&extra=kept');
+    expectSelected('Orle');
+    marker('Orle').click();
+    await harness.fixture.whenStable();
+
+    async function moveInHistory(direction: 'back' | 'forward') {
+      const navigation = firstValueFrom(router.events.pipe(filter((event) => event instanceof NavigationEnd)));
+      location[direction]();
+      await navigation;
+      await harness.fixture.whenStable();
+    }
+
+    await moveInHistory('back');
+    expect(router.url).toBe('/map?beach=mikoszewo&extra=kept');
+    expectSelected('Mikoszewo');
+    await moveInHistory('forward');
+    expect(router.url).toBe('/map?beach=orle&extra=kept');
+    expectSelected('Orle');
+  });
+
+  it.each(['unsafe', 'restricted', 'unknown'] as const)('shows independent %s safety even for a high current index', async (safety) => {
+    TestBed.overrideProvider(EXPLORE_MAP_FIXTURES, {
+      useValue: {
+        beaches: pilotBeaches,
+        forecasts: { sobieszewo: { ...sampleBeachForecasts['sobieszewo']!, index: 100, safety } },
+      },
     });
+    const { fixture, host, beach, preview } = createMap();
     beach('Sobieszewo').click();
+    await fixture.whenStable();
     fixture.detectChanges();
     expect(preview().toLowerCase()).toContain(safety);
     expect(preview()).toContain('SAMPLE DATA');
     expect(preview()).toContain('100 / 100');
-    expect(host.querySelector('[aria-labelledby="beach-preview-heading"] :is(button, a)')).toBeNull();
+    const actions = host.querySelectorAll('[aria-labelledby="beach-preview-heading"] :is(button, a)');
+    expect(actions).toHaveLength(1);
+    expect(actions[0].getAttribute('href')).toBe('/beaches/sobieszewo');
   });
 
-  it('keeps missing forecasts and empty pilot data explicit', () => {
-    const { fixture, host, beach, preview } = createMap();
+  it('keeps missing forecasts explicit', async () => {
+    const { fixture, beach, preview } = createMap();
     beach('Orle').click();
+    await fixture.whenStable();
     fixture.detectChanges();
     expect(preview()).toContain('Orle');
     expect(preview()).toContain('SAMPLE DATA');
     expect(preview()).toContain('Safety unknown');
     expect(preview()).toContain('No sample forecast is available');
+  });
 
-    fixture.componentRef.setInput('beaches', []);
-    fixture.detectChanges();
+  it('keeps empty pilot data explicit', () => {
+    TestBed.overrideProvider(EXPLORE_MAP_FIXTURES, {
+      useValue: { beaches: [], forecasts: sampleBeachForecasts },
+    });
+    const { host, preview } = createMap();
     expect(host.textContent).toContain('No pilot beaches are available');
     expect(preview()).toContain('A preview will appear when pilot beaches are available');
     expect(host.querySelector('.beach-map-marker')).toBeNull();
@@ -131,11 +201,12 @@ describe('Explore Map', () => {
     expect(engine.remove).toHaveBeenCalledTimes(2);
   });
 
-  it('keeps the list usable when WebGL initialization fails', () => {
+  it('keeps the list usable when WebGL initialization fails', async () => {
     engine.fail = true;
     const { fixture, beach, preview, host } = createMap();
     expect(host.textContent).toContain('The coastal map could not load');
     beach('Sobieszewo').click();
+    await fixture.whenStable();
     fixture.detectChanges();
     expect(preview()).toContain('Sobieszewo');
   });

@@ -3,7 +3,7 @@ import {
   signal, viewChild,
 } from '@angular/core';
 import { AttributionControl, Map, Marker, NavigationControl, setWorkerUrl } from 'maplibre-gl';
-import { Beach } from './beaches';
+import { Beach } from '../beaches/pilot-beaches';
 
 @Component({
   selector: 'app-beach-map',
