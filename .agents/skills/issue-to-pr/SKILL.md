@@ -17,7 +17,7 @@ description: Execute an approved Amber Hunter GitHub Issue from scoped plan thro
 1. Verify owner-approved scope and Project status Ready. Together they authorize routine scoped work within effective permissions.
 2. Record the scoped plan, checks and base SHA. Implement on an issue-specific branch or worktree and run the existing checks.
 3. Prepare a linked PR with the required evidence. Open it when authorized and keep it draft while evidence is pending. Verify permitted Project writes with separate reads.
-4. Prepare the offline `REVIEW-HANDOFF.md` using the [Reviewer handoff](../../../docs/harness/REVIEWER.md#review-handoff) for the exact base/head. The owner launches the separate Terminal Reviewer. Nested invocation is blocked.
+4. Provide the Owner with the three ready-to-use artifacts specified in the [Reviewer handoff](../../../docs/harness/REVIEWER.md#review-handoff) for each exact-diff review and re-review. The Owner launches the separate Terminal Reviewer.
 5. Follow the [Controlled Autonomy workflow](../../../docs/harness/OPERATING_MODEL.md#issue-workflow) for failure recovery and stop conditions. Use its review limits and Owner Exception Protocol. Rerun checks and verify review of the latest diff each time.
 6. Record actual local checks, CI status, reviewed SHAs, findings, verdict, evidence and blockers. Hand off the PR to the owner for merge.
 7. After a human merge, follow [Post-merge synchronization](../../../docs/harness/OPERATING_MODEL.md#post-merge-synchronization) and verify automatic remote head deletion under [Post-merge cleanup](../../../docs/harness/OPERATING_MODEL.md#post-merge-cleanup). Defer optional housekeeping or obtain explicit approval for the exact destructive plan.

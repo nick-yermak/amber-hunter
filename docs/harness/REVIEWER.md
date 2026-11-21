@@ -10,7 +10,7 @@ Nested invocation from Main is **BLOCKED**. The CLI exited with code 1 at app-se
 
 ## Launch
 
-From Terminal, start a new Codex CLI session using the separate Reviewer profile. Substitute the absolute path to the checkout containing the diff.
+The Owner runs the command supplied by Main in Terminal to start a separate Codex CLI session. Main uses this pattern and substitutes the absolute path to the checkout containing the diff.
 
 ```sh
 env -u SSH_AUTH_SOCK \
@@ -24,7 +24,15 @@ In the CLI session, confirm the effective sandbox and approval policy before rev
 
 ## Review handoff
 
-Main prepares a self-contained `REVIEW-HANDOFF.md` for each exact PR base/head pair and sends its absolute path to the Owner. Store it outside tracked files, in an allowed local location readable from the separate Reviewer session. Refresh the handoff when the diff or evidence changes. Include:
+For every initial review and re-review, Main provides the Owner with three ready-to-use artifacts for the exact PR base/head pair:
+
+1. The absolute path to the self-contained `REVIEW-HANDOFF.md`.
+2. A complete, copy-paste-ready Terminal command based on [Launch](#launch), with the actual checkout path and the restricted Reviewer profile and flags.
+3. A complete, copy-paste-ready Reviewer prompt with the actual handoff path and full base/head SHAs. State all [five mandatory local control checks](#verified-local-controls) and require them to pass before review. Include the review constraints, the exact-diff task and the verdict format described below.
+
+The Owner runs the command manually and pastes the supplied prompt as written. Main fills in all paths, SHAs and instructions before delivery.
+
+Store the handoff outside tracked files, in an allowed local location readable from the separate Reviewer session. Refresh it when the diff or evidence changes. Include:
 
 - Issue and PR identifiers and links, exact acceptance criteria, scope and constraints.
 - Absolute checkout path, full PR diff base and head SHAs, previous findings and resolutions, and Owner decisions or exceptions.
