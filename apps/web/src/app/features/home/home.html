@@ -1,0 +1,140 @@
+@let current = currentForecast();
+
+<div class="mx-auto grid max-w-300 gap-8 px-4 py-6 sm:px-6 sm:py-8 lg:gap-10">
+  <section
+    aria-labelledby="home-heading"
+    class="grid gap-5 rounded-card border border-divider bg-linear-to-br from-surface-cool to-surface-warm p-4 sm:p-7 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]"
+  >
+    <div class="min-w-0">
+      <p class="text-xs font-semibold tracking-widest text-action-strong">SAMPLE DATA</p>
+      <h1 id="home-heading" class="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl lg:text-5xl">
+        Coastal forecast
+      </h1>
+      <p class="mt-2 max-w-xl text-muted">An illustration of daily Baltic coast conditions using fictional data.</p>
+
+      @if (current.state === 'ready' || current.state === 'stale') {
+        <article aria-labelledby="amber-index-heading" class="mt-5 rounded-card bg-surface p-4 sm:p-5">
+          <p class="text-sm text-muted">Sample forecast for <time [attr.datetime]="current.date">{{ current.label }}</time></p>
+          @if (current.state === 'stale') {
+            <p role="status" class="mt-3 rounded-control bg-surface-warm px-3 py-2 font-medium">
+              Stale sample forecast. Favorable windows are hidden until a current sample is available.
+            </p>
+          }
+          <div class="mt-3 grid items-center gap-4 sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-6">
+            <div
+              class="grid size-28 place-content-center rounded-full border-6 border-amber-accent bg-surface-warm text-center tabular-nums"
+              role="img"
+              [attr.aria-label]="'Experimental Amber Index: ' + current.index + ' out of 100, sample data'"
+            >
+              <span aria-hidden="true" class="text-4xl leading-none font-semibold">{{ current.index }}</span>
+              <span aria-hidden="true" class="text-sm text-muted">/ 100</span>
+            </div>
+            <div>
+              <h2 id="amber-index-heading" class="text-xl font-semibold tracking-tight">Experimental Amber Index</h2>
+              <p class="mt-1 text-sm text-muted">An illustrative score for conditions. It does not measure the chance of finding amber.</p>
+              <ul class="mt-2 list-disc space-y-1 ps-5 text-sm">
+                @for (reason of current.reasons; track reason) {
+                  <li>{{ reason }}</li>
+                }
+              </ul>
+            </div>
+          </div>
+          <dl class="mt-4 grid gap-3 border-t border-divider pt-3 text-sm sm:grid-cols-2">
+            <div>
+              <dt class="font-semibold">Sample data confidence</dt>
+              <dd class="text-muted">{{ current.confidence }} · describes the sample inputs</dd>
+            </div>
+            <div>
+              <dt class="font-semibold">Forecast freshness</dt>
+              <dd class="text-muted">
+                <time [attr.datetime]="current.capturedAt">{{ current.freshness }}</time>
+                · {{ current.state === 'stale' ? 'outside' : 'within' }} the sample update window
+              </dd>
+            </div>
+          </dl>
+        </article>
+      } @else {
+        <div role="status" class="mt-5 rounded-card bg-surface p-5">
+          @switch (current.state) {
+            @case ('loading') {
+              <p class="font-semibold">Loading sample forecast</p>
+              <p class="mt-1 text-muted">The local preview is being prepared.</p>
+            }
+            @case ('unavailable') {
+              <p class="font-semibold">Sample forecast unavailable</p>
+              <p class="mt-1 text-muted">The local preview could not be loaded. No index or time windows are available.</p>
+            }
+            @case ('empty') {
+              <p class="font-semibold">No sample forecast</p>
+              <p class="mt-1 text-muted">There are no entries for this example.</p>
+            }
+          }
+        </div>
+      }
+    </div>
+
+    <div class="grid content-end gap-3">
+      @let safety = current.state === 'ready' || current.state === 'stale' ? current.safety : 'unknown';
+      <aside aria-labelledby="safety-heading" class="rounded-card bg-surface p-4 sm:p-5">
+        <h2 id="safety-heading" class="text-sm font-semibold">Safety status · sample</h2>
+        <p class="mt-1 font-semibold">{{ safetyDetails[safety].label }}</p>
+        <p class="mt-1 text-sm text-muted">{{ safetyDetails[safety].explanation }}</p>
+      </aside>
+      <a routerLink="/map" class="flex min-h-11 items-center justify-between gap-3 rounded-control bg-surface px-4 py-2 font-medium text-action-strong hover:underline">
+        Explore Map <span aria-hidden="true">→</span>
+      </a>
+      <a routerLink="/academy" class="flex min-h-11 items-center justify-between gap-3 rounded-control bg-surface px-4 py-2 font-medium text-action-strong hover:underline">
+        Amber Academy <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+
+  @if (current.state === 'ready' || current.state === 'stale') {
+    <section aria-labelledby="previews-heading">
+      <h2 id="previews-heading" class="text-2xl font-semibold tracking-tight">Beach previews</h2>
+      <p class="mt-1 text-sm text-muted">SAMPLE DATA · Fictional beaches and illustrative time windows.</p>
+      @if (current.safety !== 'clear') {
+        <p class="mt-2 font-medium">Favorable windows are hidden due to the overall sample safety status.</p>
+      }
+      <ul class="mt-4 grid gap-3 md:grid-cols-3">
+        @for (beach of current.beaches; track beach.name) {
+          <li class="rounded-card border border-divider bg-surface p-4 sm:p-5">
+            <h3 class="font-semibold">{{ beach.name }}</h3>
+            <p class="mt-1 text-sm text-muted">{{ safetyDetails[beach.safety].label }}</p>
+            @if (current.state === 'ready' && current.safety === 'clear' && beach.safety === 'clear') {
+              <p class="mt-3 text-sm">Sample favorable window <span class="block font-semibold tabular-nums">{{ beach.window }}</span></p>
+            } @else {
+              <p class="mt-3 text-sm font-medium">Favorable window withheld</p>
+            }
+          </li>
+        } @empty {
+          <li class="text-muted">No sample beach previews available.</li>
+        }
+      </ul>
+    </section>
+
+    <section aria-labelledby="outlook-heading">
+      <h2 id="outlook-heading" class="text-2xl font-semibold tracking-tight">Seven-day outlook</h2>
+      <p class="mt-1 text-sm text-muted">SAMPLE DATA · Experimental Amber Index (0–100) and wave height.</p>
+      <ol class="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">
+        @for (day of current.outlook; track day.date) {
+          <li class="rounded-control border border-divider bg-surface p-3 first:bg-surface-warm">
+            <time class="text-sm font-semibold" [attr.datetime]="day.date">{{ day.label }}</time>
+            <dl class="mt-1 text-sm tabular-nums">
+              <div class="flex flex-wrap items-baseline gap-x-2">
+                <dt class="text-muted">Index</dt>
+                <dd class="text-xl font-semibold">{{ day.index }}</dd>
+              </div>
+              <div class="flex flex-wrap gap-x-2">
+                <dt class="text-muted">Waves</dt>
+                <dd>{{ day.wavesMeters }} m</dd>
+              </div>
+            </dl>
+          </li>
+        } @empty {
+          <li class="col-span-full text-muted">No sample outlook available.</li>
+        }
+      </ol>
+    </section>
+  }
+</div>

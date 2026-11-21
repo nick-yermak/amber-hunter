@@ -17,7 +17,7 @@ describe('App shell', () => {
   }
 
   it.each([
-    ['/', 'Home', 'Overview', 'page'],
+    ['/', 'Coastal forecast', 'Overview', 'page'],
     ['/map', 'Explore Map', 'Map', 'page'],
     ['/beaches/example', 'Beach Details', 'Map', 'location'],
     ['/academy', 'Amber Academy', 'Academy', 'page'],
@@ -30,7 +30,7 @@ describe('App shell', () => {
 
     expect(router.url).toBe(url);
     expect(host.querySelectorAll('router-outlet')).toHaveLength(1);
-    expect(host.querySelector('main h1')?.textContent).toBe(heading);
+    expect(host.querySelector('main h1')?.textContent?.trim()).toBe(heading);
 
     for (const selector of ['header nav', 'app-mobile-navigation nav']) {
       const activeLinks = host.querySelectorAll(`${selector} a[aria-current]`);
