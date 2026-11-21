@@ -1,0 +1,72 @@
+<section class="safe-page-gutters mx-auto w-full max-w-300 pb-6 pt-6 md:pb-10">
+  <div #intro>
+    <h1 class="text-3xl font-semibold tracking-tight text-ink">Explore Map</h1>
+    <p class="mt-2 max-w-prose text-muted">Explore pilot beaches along the coast near Gdańsk.</p>
+  </div>
+
+  <div class="mt-5 grid gap-4 lg:grid-cols-[17rem_minmax(0,1fr)] lg:items-start">
+    <aside aria-labelledby="beach-list-heading"
+           class="order-2 rounded-card border border-divider bg-surface p-4 lg:order-1 lg:row-span-2">
+      <h2 id="beach-list-heading" class="text-lg font-semibold">Pilot beaches</h2>
+      @if (beaches().length) {
+        <ul class="mt-3 grid gap-2 sm:grid-cols-3 lg:grid-cols-1">
+          @for (beach of beaches(); track beach.id) {
+            <li>
+              <button type="button"
+                      class="flex min-h-11 w-full flex-col justify-center rounded-control border border-divider px-3 py-2 text-start hover:bg-surface-cool aria-pressed:border-action aria-pressed:bg-surface-warm"
+                      [attr.aria-pressed]="selectedBeach()?.id === beach.id"
+                      (click)="selectedId.set(beach.id)">
+                <span class="font-semibold">{{ beach.name }}</span>
+                <span class="text-sm text-muted">{{ beach.locality }}</span>
+              </button>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="mt-2 text-sm text-muted">No pilot beaches are available.</p>
+      }
+    </aside>
+
+    <app-beach-map #mapHost class="order-1 lg:order-2" [beaches]="beaches()"
+                   [selectedId]="selectedBeach()?.id ?? null" (beachSelected)="selectedId.set($event)" />
+
+    <section aria-labelledby="beach-preview-heading" class="order-3 rounded-card border border-divider bg-surface p-4 sm:p-6">
+      @if (selectedBeach(); as beach) {
+        <p class="mb-2 inline-block rounded-control bg-surface-warm px-2 py-1 text-xs font-bold tracking-wide">SAMPLE DATA</p>
+        <h2 id="beach-preview-heading" class="text-2xl font-semibold">{{ beach.name }}</h2>
+        <p class="mt-1 text-sm text-muted">{{ beach.locality }}</p>
+
+        <div class="mt-4 rounded-control bg-surface-cool p-3">
+          <p class="text-sm font-semibold">Sample safety · {{ safetyLabels[forecast()?.safety ?? 'unknown'] }}</p>
+          <p class="mt-1 text-sm text-muted">Real conditions and access are unverified.</p>
+        </div>
+
+        @if (forecast(); as sample) {
+          <dl class="mt-4 grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
+            <div>
+              <dt class="font-semibold">Experimental Amber Index</dt>
+              <dd class="mt-1 tabular-nums"><span class="text-2xl font-semibold">{{ sample.index }}</span> / 100</dd>
+            </div>
+            <div>
+              <dt class="font-semibold">Sample confidence</dt>
+              <dd class="mt-1">{{ sample.confidence }}</dd>
+            </div>
+            <div class="col-span-2 sm:col-span-1">
+              <dt class="font-semibold">Sample freshness</dt>
+              <dd class="mt-1">{{ sample.freshness }}</dd>
+              <dd><time [attr.datetime]="sample.capturedAt">{{ sample.capturedAt | date:'d MMM y, HH:mm':'UTC' }} UTC</time></dd>
+            </div>
+          </dl>
+          <p class="mt-3 text-sm text-muted">The index illustrates modeled conditions. It does not estimate your chance of finding amber.</p>
+        } @else {
+          <p class="mt-3 text-sm text-muted">No sample forecast is available for this beach.</p>
+        }
+      } @else {
+        <h2 id="beach-preview-heading" class="text-lg font-semibold">Beach preview</h2>
+        <p class="mt-1 text-sm text-muted">
+          {{ beaches().length ? 'Select a beach on the map or in the list to see its preview.' : 'A preview will appear when pilot beaches are available.' }}
+        </p>
+      }
+    </section>
+  </div>
+</section>
