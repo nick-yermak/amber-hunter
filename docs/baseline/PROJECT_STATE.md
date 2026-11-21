@@ -1,10 +1,10 @@
 # Amber Hunter — Project State
 
-**Version:** 1.4
+**Version:** 1.5
 
-**Updated:** 2026-11-21
+**Updated:** 2026-11-22
 
-**Status:** Foundation and Harness work through AH-012 is merged. The next product objective is Explore Map UI.
+**Status:** Product work through AH-014 is merged. AH-015 is the current Harness change.
 
 ## Project mission
 Build a polished, public, free-to-use portfolio and learning application for finding favorable amber-hunting conditions on Poland's Baltic coast. Demonstrate Angular, geospatial engineering, data processing, explainable forecasts, quality engineering, and a pragmatic Codex-based AI development harness. Commercial competition and monetization are not primary objectives.
@@ -31,9 +31,9 @@ Build a polished, public, free-to-use portfolio and learning application for fin
 | Forecast | Experimental Amber Index 0–100; Open-Meteo primary, Copernicus research; 72h conditions; three-hour refresh checks; independent safety checks |
 | Content | Amber Academy static articles for MVP; CMS later |
 
-## Verified state on 2026-11-21
+## Verified state on 2026-11-22
 
-- The [repository](https://github.com/nick-yermak/amber-hunter) is public and its default branch is `main`. The verified remote `main` tip on 2026-11-21 was `81ba741b0d4a2edab07fba70cf9af0f6faace86e` (AH-012 squash merge).
+- The [repository](https://github.com/nick-yermak/amber-hunter) is public and its default branch is `main`. The AH-015 baseline audit verified local `main`, cached `origin/main` and live remote `main` at `5cce4053cca64a9720515ba82d17a6c3dd7970c5`. The primary checkout was clean and was the only registered worktree.
 - [AH-001](https://github.com/nick-yermak/amber-hunter/issues/1) completed the Issue-to-PR workflow dry run.
 - [AH-002](https://github.com/nick-yermak/amber-hunter/issues/3) completed the Reviewer verification for MVP. The owner approved the [Restricted Local Reviewer](../harness/REVIEWER.md) for read-only local review. Remote-write isolation remains unproven. Authenticated GitHub operations are outside the Reviewer workflow.
 - [AH-003](https://github.com/nick-yermak/amber-hunter/issues/6) is closed and Done. [PR #7](https://github.com/nick-yermak/amber-hunter/pull/7) was squash-merged as `8fe731e4969a2a8a1d79494fce2508a202633741`. The minimal workspace pins Node.js 24.22.3 and pnpm 10.34.9. The [Workspace install check](https://github.com/nick-yermak/amber-hunter/actions/runs/43157400197) passed on that PR. See the [CI bootstrap guide](../harness/CI_CD.md).
@@ -44,7 +44,9 @@ Build a polished, public, free-to-use portfolio and learning application for fin
 - [AH-009](https://github.com/nick-yermak/amber-hunter/issues/21) closed after [PR #22](https://github.com/nick-yermak/amber-hunter/pull/22) merged the [Controlled Autonomy v1 workflow](../harness/OPERATING_MODEL.md#issue-workflow).
 - [AH-010](https://github.com/nick-yermak/amber-hunter/issues/23) closed after [PR #24](https://github.com/nick-yermak/amber-hunter/pull/24) merged the responsive app shell and navigation.
 - [AH-011](https://github.com/nick-yermak/amber-hunter/issues/25) closed after [PR #26](https://github.com/nick-yermak/amber-hunter/pull/26) merged the Home / Forecast UI foundation with sample data.
-- [AH-012](https://github.com/nick-yermak/amber-hunter/issues/27) is closed and verified Done in Project #3. [PR #28](https://github.com/nick-yermak/amber-hunter/pull/28) merged the documented [post-merge cleanup procedure](../harness/OPERATING_MODEL.md#post-merge-cleanup). The primary checkout still uses `codex/ah-012-harness-maintenance`. Cleanup was deferred because active local processes were detected and live GitHub checks were unavailable during the attempt.
+- [AH-012](https://github.com/nick-yermak/amber-hunter/issues/27) is closed and verified Done in Project #3. [PR #28](https://github.com/nick-yermak/amber-hunter/pull/28) merged the documented [post-merge cleanup procedure](../harness/OPERATING_MODEL.md#post-merge-cleanup). The local AH-012 branch was retained at the AH-015 baseline audit.
+- [AH-013](https://github.com/nick-yermak/amber-hunter/pull/32) delivered Explore Map UI. [AH-014](https://github.com/nick-yermak/amber-hunter/issues/33) closed as Completed after [PR #34](https://github.com/nick-yermak/amber-hunter/pull/34) merged Beach Details. The final reviewed head was `c8a59eb85a4f4a41a38676df4008b43c59eb72aa`. The AH-014 branch remained locally and on GitHub at the baseline audit.
+- GitHub automatic head branch deletion was enabled and verified before AH-015. Actual deletion on a subsequent merge remains to be verified.
 - Forecast research is at specification v0.1 and awaits scientific validation. The Baltic Explorer reference images are conceptual design guides.
 
 ## Important constraints
@@ -67,7 +69,7 @@ Build a polished, public, free-to-use portfolio and learning application for fin
 
 ## Next product objective
 
-Explore Map UI follows the responsive app shell and Home / Forecast UI. Start from verified remote `main` in a clean checkout. See [Current Operational State](../harness/CURRENT_STATE.md) for the task handoff.
+See [Current Operational State](../harness/CURRENT_STATE.md) for the next task handoff.
 
 ## Documentation rules
 

@@ -16,7 +16,7 @@ Acceptance: a real documentation-only Issue passes the Issue-to-PR loop; actions
 EPIC AH-E02 Angular PWA & Baltic Explorer UI
 - AH-101 Bootstrap pnpm workspaces + Angular + Worker *after owner approval*.
 - AH-102 Define accessible semantic design tokens / font fallback.
-- AH-010 — Responsive App Shell & Navigation, the first [Controlled Autonomy pilot](OPERATING_MODEL.md#ah-010-pilot). Preserve the planned PL/EN/RU localization work.
+- AH-010 — Responsive App Shell & Navigation, the first Controlled Autonomy pilot under the [Issue workflow](OPERATING_MODEL.md#issue-workflow). Preserve the planned PL/EN/RU localization work.
 - AH-104 Hero/Home UI with synthetic demo data visibly marked.
 
 ## M2 — Data & Map
