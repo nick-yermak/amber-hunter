@@ -2,3 +2,14 @@
   display: block;
   min-width: 0;
 }
+
+.map-canvas {
+  height: clamp(18rem, 44dvh, 34rem);
+}
+
+@media (width < 48rem) {
+  .map-canvas {
+    /* Leave room for both 44px zoom buttons and the wrapping attribution. */
+    max-height: max(9rem, calc(100dvh - var(--map-occupied-height, 0px)));
+  }
+}

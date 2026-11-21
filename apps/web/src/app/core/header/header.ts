@@ -8,8 +8,7 @@ import { PrimaryNavigation } from '../primary-navigation/primary-navigation';
   template: `
     <header class="border-b border-divider bg-surface">
       <div
-        class="mx-auto flex min-h-14 max-w-300 items-center gap-8 py-2
-               ps-[max(1rem,env(safe-area-inset-left))] pe-[max(1rem,env(safe-area-inset-right))]
+        class="safe-page-gutters mx-auto flex min-h-14 max-w-300 items-center gap-8 py-2
                pt-[max(0.5rem,env(safe-area-inset-top))] md:min-h-16"
       >
         <span class="font-semibold tracking-tight text-action-strong">Amber Hunter</span>

@@ -1,6 +1,11 @@
 @import "tailwindcss" source("./app");
 @import "./styles/tokens.css";
 
+@utility safe-page-gutters {
+  padding-left: max(--spacing(4), env(safe-area-inset-left));
+  padding-right: max(--spacing(4), env(safe-area-inset-right));
+}
+
 @font-face {
   font-family: 'Inter Variable';
   src: url('./styles/fonts/InterVariable.woff2') format('woff2');

@@ -1,6 +1,8 @@
-<section class="mx-auto w-full max-w-300 px-4 pb-24 pt-6 md:pb-10">
-  <h1 class="text-3xl font-semibold tracking-tight text-ink">Explore Map</h1>
-  <p class="mt-2 max-w-prose text-muted">Explore pilot beaches along the coast near Gdańsk.</p>
+<section class="safe-page-gutters mx-auto w-full max-w-300 pb-6 pt-6 md:pb-10">
+  <div #intro>
+    <h1 class="text-3xl font-semibold tracking-tight text-ink">Explore Map</h1>
+    <p class="mt-2 max-w-prose text-muted">Explore pilot beaches along the coast near Gdańsk.</p>
+  </div>
 
   <div class="mt-5 grid gap-4 lg:grid-cols-[17rem_minmax(0,1fr)] lg:items-start">
     <aside aria-labelledby="beach-list-heading"
@@ -25,7 +27,7 @@
       }
     </aside>
 
-    <app-beach-map class="order-1 lg:order-2" [beaches]="beaches()"
+    <app-beach-map #mapHost class="order-1 lg:order-2" [beaches]="beaches()"
                    [selectedId]="selectedBeach()?.id ?? null" (beachSelected)="selectedId.set($event)" />
 
     <section aria-labelledby="beach-preview-heading" class="order-3 rounded-card border border-divider bg-surface p-4 sm:p-6">

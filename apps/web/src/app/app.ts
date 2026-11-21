@@ -22,8 +22,7 @@ import { MobileNavigation } from './core/mobile-navigation/mobile-navigation';
     <main
       #mainContent
       tabindex="-1"
-      class="min-w-0 flex-1
-             ps-[env(safe-area-inset-left)] pe-[env(safe-area-inset-right)]"
+      class="min-w-0 flex-1"
     >
       <router-outlet />
     </main>

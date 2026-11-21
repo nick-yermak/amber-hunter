@@ -5,6 +5,7 @@ import { RouterLink } from '@angular/router';
   selector: 'app-route-placeholder',
   standalone: true,
   imports: [RouterLink],
+  host: { class: 'block ps-[env(safe-area-inset-left)] pe-[env(safe-area-inset-right)]' },
   template: `
     <section class="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12">
       <div class="rounded-card border border-divider bg-surface p-5 sm:p-8">
