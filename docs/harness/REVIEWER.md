@@ -6,11 +6,11 @@
 
 The manual Terminal workflow was verified locally with Codex CLI 0.167.2. A separate Restricted Local Reviewer reviewed a historical diff and returned exact base/head SHAs, findings and a verdict. That result covers the historical diff only. The installed CLI supports non-interactive `exec`, JSONL and explicit sandbox and approval settings.
 
-Nested invocation from Main is **BLOCKED**. The CLI exited with code 1 at app-server client initialization (`Operation not permitted (os error 1)`) and emitted no JSONL events. The precise cause is **UNKNOWN**. Independent review in v1 uses the owner-launched Terminal fallback. Keep the effective sandbox and approval policy in place.
+Nested invocation from Main is **BLOCKED**. The CLI exited with code 1 at app-server client initialization (`Operation not permitted (os error 1)`) and emitted no JSONL events. The precise cause is **UNKNOWN**. Independent review uses the owner-launched Terminal fallback. Keep the effective sandbox and approval policy in place.
 
 ## Launch
 
-From Terminal, start a new Codex CLI session using the separate Reviewer profile. Substitute the absolute path to the checkout containing the diff.
+The Owner runs the command supplied by Main in Terminal to start a separate Codex CLI session. Main uses this pattern and substitutes the absolute path to the checkout containing the diff.
 
 ```sh
 env -u SSH_AUTH_SOCK \
@@ -24,11 +24,26 @@ In the CLI session, confirm the effective sandbox and approval policy before rev
 
 ## Review handoff
 
-Main supplies the checkout path, Issue scope and acceptance criteria, exact full base and head SHAs defining the PR diff, and check commands with observed results. The Reviewer verifies the commits and checks the local diff between them. Missing or mismatched commits block the review.
+For every initial review and re-review, Main provides the Owner with three ready-to-use artifacts for the exact PR base/head pair:
 
-The Reviewer returns the full reviewed base/head SHAs, findings with severity (Blocker, Major, Minor, Suggestion), file and line where applicable, supporting evidence, and a verdict (Pass, Changes requested, or Blocked). Include any unverified checks and explicitly record when there are no findings. The owner returns the result to Main.
+1. The absolute path to the self-contained `REVIEW-HANDOFF.md`.
+2. A complete, copy-paste-ready Terminal command based on [Launch](#launch), with the actual checkout path and the restricted Reviewer profile and flags.
+3. A complete, copy-paste-ready Reviewer prompt with the actual handoff path and full base/head SHAs. State all [five mandatory local control checks](#verified-local-controls) and require them to pass before review. Include the review constraints, the exact-diff task and the verdict format described below.
 
-Main compares both reviewed SHAs with the current PR diff before accepting the result. A changed base/head pair requires a fresh review. A failed launch, timeout or missing result leaves independent review pending. Follow the [two-cycle workflow](OPERATING_MODEL.md#issue-workflow) for scoped fixes.
+The Owner runs the command manually and pastes the supplied prompt as written. Main fills in all paths, SHAs and instructions before delivery.
+
+Store the handoff outside tracked files, in an allowed local location readable from the separate Reviewer session. Refresh it when the diff or evidence changes. Include:
+
+- Issue and PR identifiers and links, exact acceptance criteria, scope and constraints.
+- Absolute checkout path, full PR diff base and head SHAs, previous findings and resolutions, and Owner decisions or exceptions.
+- Local check commands and observed results, required CI check name, run ID, link, tested head and observed result. Include absolute screenshot and browser-log paths where applicable.
+- Limitations and missing or inapplicable evidence. Keep credentials out of the handoff.
+
+After verifying the launch controls, the Reviewer resolves both supplied SHAs locally as commits, confirms the resolved IDs match and inspects `git diff <base> <head>` in the named checkout. Missing or mismatched commits prevent exact-diff review. Read the applicable evidence locally and distinguish supplied test and CI results from independently verified evidence. Record unavailable evidence as a gap. Use only local inputs and avoid authenticated GitHub operations.
+
+Return the full reviewed base/head SHAs, findings with severity (Blocker, Major, Minor, Suggestion), file and line where applicable, supporting evidence and a verdict (Pass, Changes requested, or Blocked). Explicitly report when there are no findings. The Owner returns the result to Main.
+
+Before accepting the result, Main compares both reviewed SHAs with the current PR diff. A changed pair requires a refreshed handoff and fresh review. A failed launch, timeout or missing result leaves review pending. Follow the [Issue workflow](OPERATING_MODEL.md#issue-workflow) for fixes and the [Owner Exception Protocol](OPERATING_MODEL.md#owner-exception-protocol) for any additional cycle.
 
 ## Verified local controls
 

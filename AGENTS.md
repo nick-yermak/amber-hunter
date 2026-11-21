@@ -28,13 +28,9 @@ Angular, TypeScript strict, standalone components, Signals; Tailwind, Angular CD
 Amber Index 0–100 is experimental **not the probability of finding amber**. Keep data confidence separate from score. Independent safety restrictions override actionable beach recommendations. Never treat mock or AI-generated forecast/geography as real information. Prior 72 hours and 3-hour checks are requirements; factor weights, segment widths and thresholds remain open to research and validation. Preserve original source provenance and versioned forecasts.
 
 ## Agent workflow
-1. Read Issue, criteria, docs, and scoped diff. Identify assumptions, threats and affected modules.
-2. Propose a brief plan and tests. Escalate scope expansion, new ADRs, dependencies, or high-risk actions.
-3. Owner-approved scope and verified Project status `Ready` authorize implementation on an issue-specific branch or worktree. Scoped planning, checks, PR preparation and review coordination need no separate routine approval. Follow the [Controlled Autonomy workflow](docs/harness/OPERATING_MODEL.md#issue-workflow) and effective permissions.
-4. Run available checks; never bypass or weaken failing tests to pass CI.
-5. Record checks with observed outcomes, not invented successes.
-6. Arrange independent read-only review of the exact PR diff. Address scoped findings within the two-cycle limit and record unresolved blockers.
-7. Create linked PR with evidence. Only the Human Owner performs the final merge. The Main Agent must never merge, even at the owner's request. Automatic merge is prohibited. Never modify production secrets or data.
+Follow the [Operating Model](docs/harness/OPERATING_MODEL.md#issue-workflow) and [Permission Matrix](docs/harness/PERMISSIONS.md). Verify owner-approved scope and Project status `Ready` before implementation. Run required checks, record observed outcomes, and arrange separate read-only review of the exact PR diff using the [Reviewer runbook](docs/harness/REVIEWER.md#review-handoff).
+
+Only the Human Owner performs the final PR merge. Main must never merge or enable auto-merge. Preserve protected settings, production secrets and data, and effective sandbox and approval controls.
 
 ## Visual standards
 Use `docs/baseline/DESIGN_SYSTEM.md` and `docs/design/references/` as references. Maintain calm Baltic Explorer hierarchy. AI images are conceptual, not pixel-accurate or data-grounded. Validate accessibility, content states, responsiveness, i18n PL/EN/RU.

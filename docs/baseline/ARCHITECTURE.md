@@ -90,4 +90,4 @@ Independent safety states: AVAILABLE, CAUTION, UNSAFE, RESTRICTED, UNKNOWN (prop
 - Map tile provider/license and OSM coastline import validation.
 - UI font licenses, design-token finalization and accessibility contrast.
 - Project preview deployment method and exact DB binding strategy.
-- Secret access for protected release environments. See [Project State](PROJECT_STATE.md#verified-state-on-2026-11-21) for the active GitHub ruleset.
+- Secret access for protected release environments. See [Project State](PROJECT_STATE.md#verified-state-on-2026-11-22) for the active GitHub ruleset.
