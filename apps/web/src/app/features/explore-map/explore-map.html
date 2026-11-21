@@ -15,7 +15,7 @@
               <button type="button"
                       class="flex min-h-11 w-full flex-col justify-center rounded-control border border-divider px-3 py-2 text-start hover:bg-surface-cool aria-pressed:border-action aria-pressed:bg-surface-warm"
                       [attr.aria-pressed]="selectedBeach()?.id === beach.id"
-                      (click)="selectedId.set(beach.id)">
+                      (click)="selectBeach(beach.id)">
                 <span class="font-semibold">{{ beach.name }}</span>
                 <span class="text-sm text-muted">{{ beach.locality }}</span>
               </button>
@@ -28,7 +28,7 @@
     </aside>
 
     <app-beach-map #mapHost class="order-1 lg:order-2" [beaches]="beaches()"
-                   [selectedId]="selectedBeach()?.id ?? null" (beachSelected)="selectedId.set($event)" />
+                   [selectedId]="selectedBeach()?.id ?? null" (beachSelected)="selectBeach($event)" />
 
     <section aria-labelledby="beach-preview-heading" class="order-3 rounded-card border border-divider bg-surface p-4 sm:p-6">
       @if (selectedBeach(); as beach) {

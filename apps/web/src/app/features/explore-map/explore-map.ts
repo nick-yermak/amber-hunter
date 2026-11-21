@@ -1,9 +1,9 @@
 import {
-  afterNextRender, Component, computed, DestroyRef, ElementRef, inject, input, linkedSignal, viewChild,
+  afterNextRender, Component, computed, DestroyRef, ElementRef, inject, input, viewChild,
 } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BeachMap } from './beach-map';
 import { Beach, pilotBeaches } from '../beaches/pilot-beaches';
 import { BeachSampleForecast, sampleBeachForecasts, sampleSafetyLabels } from '../beaches/sample-beach-forecasts';
@@ -23,9 +23,10 @@ export class ExploreMap {
       forecasts ?? sampleBeachForecasts,
   });
 
-  private readonly queryParams = toSignal(inject(ActivatedRoute).queryParamMap);
-
-  protected readonly selectedId = linkedSignal(() => this.queryParams()?.get('beach') ?? null);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly queryParams = toSignal(this.route.queryParamMap);
+  private readonly selectedId = computed(() => this.queryParams()?.get('beach'));
   protected readonly selectedBeach = computed(() =>
     this.beaches().find((beach) => beach.id === this.selectedId()),
   );
@@ -38,6 +39,17 @@ export class ExploreMap {
   private readonly intro = viewChild.required<ElementRef<HTMLElement>>('intro');
   private readonly mapHost = viewChild.required('mapHost', { read: ElementRef<HTMLElement> });
   private readonly destroyRef = inject(DestroyRef);
+
+  protected selectBeach(id: string): void {
+    if (id === this.selectedId() || !this.beaches().some((beach) => beach.id === id)) return;
+
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { beach: id },
+      queryParamsHandling: 'merge',
+      preserveFragment: true,
+    });
+  }
 
   constructor() {
     afterNextRender(() => {
