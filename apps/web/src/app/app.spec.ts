@@ -60,6 +60,29 @@ describe('App shell', () => {
     expect(host.querySelector('main a')?.getAttribute('href')).toBe('/map');
   });
 
+  it('uses the beach path segment even when a matrix parameter has the same name', async () => {
+    const { fixture, host, router } = createShell();
+    await router.navigateByUrl('/beaches/mikoszewo;slug=orle');
+    await fixture.whenStable();
+
+    const page = host.querySelector('main')!;
+    expect(page.querySelector('h1')?.textContent).toBe('Mikoszewo');
+    expect(page.textContent).toContain('Restricted access in this scenario');
+    expect(page.textContent).toContain('Stale in scenario');
+    expect(page.querySelector('a')?.getAttribute('href')).toBe('/map?beach=mikoszewo');
+  });
+
+  it('keeps an unknown beach path unknown despite a valid matrix slug', async () => {
+    const { fixture, host, router } = createShell();
+    await router.navigateByUrl('/beaches/unknown;slug=mikoszewo');
+    await fixture.whenStable();
+
+    const page = host.querySelector('main')!;
+    expect(page.querySelector('h1')?.textContent).toBe('Beach not found');
+    expect(page.querySelector('a')?.getAttribute('href')).toBe('/map');
+    expect(page.querySelector('time')).toBeNull();
+  });
+
   it.each(['beaches=preview', 'forecasts=preview', 'beaches=preview&forecasts=preview'])(
     'keeps Map identities and forecast intact with %s',
     async (query) => {

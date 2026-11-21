@@ -16,11 +16,15 @@ export const BEACH_DETAILS_SAMPLE_FORECASTS = new InjectionToken<typeof sampleBe
   templateUrl: './beach-details.html',
 })
 export class BeachDetails {
-  private readonly params = toSignal(inject(ActivatedRoute).paramMap);
+  private readonly segments = toSignal(inject(ActivatedRoute).url);
 
   private readonly forecasts = inject(BEACH_DETAILS_SAMPLE_FORECASTS);
 
-  protected readonly beach = computed(() => pilotBeaches.find((beach) => beach.id === this.params()?.get('slug')));
+  protected readonly beach = computed(() => {
+    // Matrix parameters are separate from the path of the final route segment.
+    const slug = this.segments()?.at(-1)?.path;
+    return pilotBeaches.find((beach) => beach.id === slug);
+  });
   protected readonly forecast = computed(() => {
     const beach = this.beach();
     return beach && this.forecasts[beach.id];

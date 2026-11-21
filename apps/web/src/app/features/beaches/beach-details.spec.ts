@@ -1,6 +1,6 @@
 import { of } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter, UrlSegment } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from '../../app.routes';
 import { BEACH_DETAILS_SAMPLE_FORECASTS, BeachDetails } from './beach-details';
@@ -49,7 +49,7 @@ describe('Beach Details', () => {
 
   it.each(['unsafe', 'restricted', 'unknown'] as const)('puts %s sample safety before forecast metrics', (safety) => {
     TestBed.overrideProvider(ActivatedRoute, {
-      useValue: { paramMap: of(convertToParamMap({ slug: 'sobieszewo' })) },
+      useValue: { url: of([new UrlSegment('beaches', {}), new UrlSegment('sobieszewo', {})]) },
     });
     TestBed.overrideProvider(BEACH_DETAILS_SAMPLE_FORECASTS, {
       useValue: { sobieszewo: { ...sampleBeachForecasts['sobieszewo']!, index: 100, safety } },
