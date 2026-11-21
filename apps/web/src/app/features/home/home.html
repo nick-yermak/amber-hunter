@@ -1,4 +1,7 @@
 @let current = currentForecast();
+@let hasForecast = current.state === 'ready' || current.state === 'stale';
+@let safety = hasForecast ? current.safety : 'unknown';
+@let showSafetyWarning = hasForecast && safety !== 'clear';
 
 <div class="mx-auto grid max-w-300 gap-8 px-4 py-6 sm:px-6 sm:py-8 lg:gap-10">
   <section
@@ -11,6 +14,13 @@
         Coastal forecast
       </h1>
       <p class="mt-2 max-w-xl text-muted">An illustration of daily Baltic coast conditions using fictional data.</p>
+
+      @if (showSafetyWarning) {
+        <aside aria-labelledby="safety-warning-heading" class="mt-4 rounded-control border-s-4 border-action bg-surface-warm px-4 py-3">
+          <h2 id="safety-warning-heading" class="text-sm font-semibold">Sample safety · {{ safetyDetails[safety].label }}</h2>
+          <p class="mt-1 text-sm text-muted">{{ safetyDetails[safety].explanation }}</p>
+        </aside>
+      }
 
       @if (current.state === 'ready' || current.state === 'stale') {
         <article aria-labelledby="amber-index-heading" class="mt-5 rounded-card bg-surface p-4 sm:p-5">
@@ -74,12 +84,13 @@
     </div>
 
     <div class="grid content-end gap-3">
-      @let safety = current.state === 'ready' || current.state === 'stale' ? current.safety : 'unknown';
-      <aside aria-labelledby="safety-heading" class="rounded-card bg-surface p-4 sm:p-5">
-        <h2 id="safety-heading" class="text-sm font-semibold">Safety status · sample</h2>
-        <p class="mt-1 font-semibold">{{ safetyDetails[safety].label }}</p>
-        <p class="mt-1 text-sm text-muted">{{ safetyDetails[safety].explanation }}</p>
-      </aside>
+      @if (!showSafetyWarning) {
+        <aside aria-labelledby="safety-heading" class="rounded-card bg-surface p-4 sm:p-5">
+          <h2 id="safety-heading" class="text-sm font-semibold">Safety status · sample</h2>
+          <p class="mt-1 font-semibold">{{ safetyDetails[safety].label }}</p>
+          <p class="mt-1 text-sm text-muted">{{ safetyDetails[safety].explanation }}</p>
+        </aside>
+      }
       <a routerLink="/map" class="flex min-h-11 items-center justify-between gap-3 rounded-control bg-surface px-4 py-2 font-medium text-action-strong hover:underline">
         Explore Map <span aria-hidden="true">→</span>
       </a>
@@ -93,9 +104,6 @@
     <section aria-labelledby="previews-heading">
       <h2 id="previews-heading" class="text-2xl font-semibold tracking-tight">Beach previews</h2>
       <p class="mt-1 text-sm text-muted">SAMPLE DATA · Fictional beaches and illustrative time windows.</p>
-      @if (current.safety !== 'clear') {
-        <p class="mt-2 font-medium">Favorable windows are hidden due to the overall sample safety status.</p>
-      }
       <ul class="mt-4 grid gap-3 md:grid-cols-3">
         @for (beach of current.beaches; track beach.name) {
           <li class="rounded-card border border-divider bg-surface p-4 sm:p-5">

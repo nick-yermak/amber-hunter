@@ -156,10 +156,14 @@ async function checkStates(browser) {
       if (state === 'unavailable') {
         await page.screenshot({ path: path.join(__dirname, 'unavailable.png'), fullPage: true });
       }
-      if (safety === 'unsafe') {
-        await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
-        await page.screenshot({ path: path.join(__dirname, 'unsafe.png'), fullPage: true });
-        await page.evaluate(() => window.scrollTo(0, 0));
+      if (state === 'ready') {
+        const warning = await page.getByRole('complementary', { name: 'Sample safety · ' + message }).boundingBox();
+        const index = await page.getByRole('img', { name: /Experimental Amber Index/ }).boundingBox();
+        const navigation = await page.locator('app-mobile-navigation').boundingBox();
+        assert.equal(await page.getByRole('complementary').count(), 1);
+        assert.ok(warning && index && navigation);
+        assert.ok(warning.y >= 0 && warning.y + warning.height <= Math.min(index.y, navigation.y));
+        await page.screenshot({ path: path.join(__dirname, safety + '.png') });
       }
       console.log(`PASS ${state}/${safety}: state text and no favorable windows.`);
     }

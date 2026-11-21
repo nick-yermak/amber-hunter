@@ -24,6 +24,7 @@ describe('Home forecast', () => {
     expect(host.querySelector('time[datetime="2030-10-07T06:00:00+02:00"]')?.textContent)
       .toBe('7 Oct 2030, 06:00 CEST');
     expect(host.textContent).toContain('Real conditions are unverified');
+    expect(host.querySelector('#safety-warning-heading')).toBeNull();
   });
 
   it('renders seven dated outlook entries, the eligible example window and only general navigation', async () => {
@@ -47,6 +48,23 @@ describe('Home forecast', () => {
     expect(host.querySelector('aside')?.textContent).toContain(label);
     expect(host.textContent).not.toContain('07:00–10:00');
     expect(host.querySelectorAll('section ul a')).toHaveLength(0);
+  });
+
+  it.each([
+    ['unsafe', 'Unsafe conditions'],
+    ['restricted', 'Access restricted'],
+    ['unknown', 'Safety unknown'],
+  ] as const)('presents one labeled %s warning before the Amber Index', async (safety, label) => {
+    const host = await render({ ...sampleForecast, safety });
+    const warning = host.querySelector('aside[aria-labelledby="safety-warning-heading"]');
+    const index = host.querySelector('[role="img"]');
+
+    expect(host.querySelectorAll('aside')).toHaveLength(1);
+    expect(warning?.querySelector('h2')?.textContent?.trim()).toBe('Sample safety · ' + label);
+    expect(index).not.toBeNull();
+    expect(warning && index && (warning.compareDocumentPosition(index) & Node.DOCUMENT_POSITION_FOLLOWING))
+      .toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(host.querySelector('h1')?.previousElementSibling?.textContent?.trim()).toBe('SAMPLE DATA');
   });
 
   it('hides a time window for an unsafe beach even when overall safety has no restriction', async () => {
