@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { routes } from '../../app.routes';
-import { BeachDetails } from './beach-details';
+import { BEACH_DETAILS_SAMPLE_FORECASTS, BeachDetails } from './beach-details';
 import { pilotBeaches } from './pilot-beaches';
 import { sampleBeachForecasts, sampleSafetyLabels } from './sample-beach-forecasts';
 
@@ -47,14 +47,14 @@ describe('Beach Details', () => {
     expect(harness.routeNativeElement?.querySelector('a')?.getAttribute('href')).toBe('/map');
   });
 
-  it.each(['unsafe', 'restricted', 'unknown'] as const)('puts %s sample safety before forecast metrics', async (safety) => {
+  it.each(['unsafe', 'restricted', 'unknown'] as const)('puts %s sample safety before forecast metrics', (safety) => {
     TestBed.overrideProvider(ActivatedRoute, {
       useValue: { paramMap: of(convertToParamMap({ slug: 'sobieszewo' })) },
     });
-    const fixture = TestBed.createComponent(BeachDetails);
-    fixture.componentRef.setInput('forecasts', {
-      sobieszewo: { ...sampleBeachForecasts['sobieszewo']!, index: 100, safety },
+    TestBed.overrideProvider(BEACH_DETAILS_SAMPLE_FORECASTS, {
+      useValue: { sobieszewo: { ...sampleBeachForecasts['sobieszewo']!, index: 100, safety } },
     });
+    const fixture = TestBed.createComponent(BeachDetails);
     fixture.detectChanges();
     const page: HTMLElement = fixture.nativeElement;
     const sampleSection = page.querySelector('[aria-labelledby="sample-heading"]')!;

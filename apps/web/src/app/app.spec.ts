@@ -40,6 +40,26 @@ describe('App shell', () => {
     }
   });
 
+  it('keeps beach identity and sample forecasts independent of query parameters', async () => {
+    const { fixture, host, router } = createShell();
+
+    for (const query of ['forecasts=preview', 'forecasts=preview&slug=orle&extra=unknown']) {
+      await router.navigateByUrl('/beaches/mikoszewo?' + query);
+      await fixture.whenStable();
+
+      const page = host.querySelector('main')!;
+      expect(page.querySelector('h1')?.textContent).toBe('Mikoszewo');
+      expect(page.textContent).toContain('Restricted access in this scenario');
+      expect(page.textContent).toContain('Stale in scenario');
+      expect(page.textContent).toContain('82 / 100');
+    }
+
+    await router.navigateByUrl('/beaches/unknown?slug=mikoszewo&forecasts=preview');
+    await fixture.whenStable();
+    expect(host.querySelector('main h1')?.textContent).toBe('Beach not found');
+    expect(host.querySelector('main a')?.getAttribute('href')).toBe('/map');
+  });
+
   it('navigates from the map preview to details and restores selection on return', async () => {
     const { fixture, host, router } = createShell();
 
