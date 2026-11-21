@@ -8,9 +8,9 @@
     <aside aria-labelledby="beach-list-heading"
            class="order-2 rounded-card border border-divider bg-surface p-4 lg:order-1 lg:row-span-2">
       <h2 id="beach-list-heading" class="text-lg font-semibold">Pilot beaches</h2>
-      @if (beaches().length) {
+      @if (beaches.length) {
         <ul class="mt-3 grid gap-2 sm:grid-cols-3 lg:grid-cols-1">
-          @for (beach of beaches(); track beach.id) {
+          @for (beach of beaches; track beach.id) {
             <li>
               <button type="button"
                       class="flex min-h-11 w-full flex-col justify-center rounded-control border border-divider px-3 py-2 text-start hover:bg-surface-cool aria-pressed:border-action aria-pressed:bg-surface-warm"
@@ -27,7 +27,7 @@
       }
     </aside>
 
-    <app-beach-map #mapHost class="order-1 lg:order-2" [beaches]="beaches()"
+    <app-beach-map #mapHost class="order-1 lg:order-2" [beaches]="beaches"
                    [selectedId]="selectedBeach()?.id ?? null" (beachSelected)="selectBeach($event)" />
 
     <section aria-labelledby="beach-preview-heading" class="order-3 rounded-card border border-divider bg-surface p-4 sm:p-6">
@@ -66,7 +66,7 @@
       } @else {
         <h2 id="beach-preview-heading" class="text-lg font-semibold">Beach preview</h2>
         <p class="mt-1 text-sm text-muted">
-          {{ beaches().length ? 'Select a beach on the map or in the list to see its preview.' : 'A preview will appear when pilot beaches are available.' }}
+          {{ beaches.length ? 'Select a beach on the map or in the list to see its preview.' : 'A preview will appear when pilot beaches are available.' }}
         </p>
       }
     </section>

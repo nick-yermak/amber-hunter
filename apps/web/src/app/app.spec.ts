@@ -60,13 +60,32 @@ describe('App shell', () => {
     expect(host.querySelector('main a')?.getAttribute('href')).toBe('/map');
   });
 
+  it.each(['beaches=preview', 'forecasts=preview', 'beaches=preview&forecasts=preview'])(
+    'keeps Map identities and forecast intact with %s',
+    async (query) => {
+      const { fixture, host, router } = createShell();
+      await router.navigateByUrl('/map?beach=mikoszewo&extra=unknown&' + query);
+      await fixture.whenStable();
+
+      const list = Array.from(host.querySelectorAll('aside li button span:first-child'));
+      expect(list.map((name) => name.textContent?.trim())).toEqual(['Sobieszewo', 'Mikoszewo', 'Orle']);
+      expect(host.querySelector('aside [aria-pressed="true"]')?.textContent).toContain('Mikoszewo');
+      const preview = host.querySelector('[aria-labelledby="beach-preview-heading"]')!;
+      for (const text of ['SAMPLE DATA', 'Restricted access in this scenario', 'Stale in scenario', '82 / 100']) {
+        expect(preview.textContent).toContain(text);
+      }
+    },
+  );
+
   it('navigates from the map preview to details and restores selection on return', async () => {
     const { fixture, host, router } = createShell();
 
-    await router.navigateByUrl('/map?beach=invalid');
-    await fixture.whenStable();
-    expect(host.querySelector('aside [aria-pressed="true"]')).toBeNull();
-    expect(host.querySelector('[aria-labelledby="beach-preview-heading"] a')).toBeNull();
+    for (const url of ['/map?beach=', '/map?beach=invalid']) {
+      await router.navigateByUrl(url);
+      await fixture.whenStable();
+      expect(host.querySelector('aside [aria-pressed="true"]')).toBeNull();
+      expect(host.querySelector('[aria-labelledby="beach-preview-heading"] a')).toBeNull();
+    }
 
     host.querySelector<HTMLButtonElement>('aside button')!.click();
     await fixture.whenStable();

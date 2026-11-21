@@ -6,7 +6,8 @@ import { TestBed } from '@angular/core/testing';
 import { filter, firstValueFrom } from 'rxjs';
 import { vi } from 'vitest';
 import { appConfig } from '../../app.config';
-import { ExploreMap } from './explore-map';
+import { EXPLORE_MAP_FIXTURES, ExploreMap } from './explore-map';
+import { pilotBeaches } from '../beaches/pilot-beaches';
 import { sampleBeachForecasts } from '../beaches/sample-beach-forecasts';
 
 const engine = vi.hoisted(() => ({
@@ -144,10 +145,13 @@ describe('Explore Map', () => {
   });
 
   it.each(['unsafe', 'restricted', 'unknown'] as const)('shows independent %s safety even for a high current index', async (safety) => {
-    const { fixture, host, beach, preview } = createMap();
-    fixture.componentRef.setInput('forecasts', {
-      sobieszewo: { ...sampleBeachForecasts['sobieszewo']!, index: 100, safety },
+    TestBed.overrideProvider(EXPLORE_MAP_FIXTURES, {
+      useValue: {
+        beaches: pilotBeaches,
+        forecasts: { sobieszewo: { ...sampleBeachForecasts['sobieszewo']!, index: 100, safety } },
+      },
     });
+    const { fixture, host, beach, preview } = createMap();
     beach('Sobieszewo').click();
     await fixture.whenStable();
     fixture.detectChanges();
@@ -159,8 +163,8 @@ describe('Explore Map', () => {
     expect(actions[0].getAttribute('href')).toBe('/beaches/sobieszewo');
   });
 
-  it('keeps missing forecasts and empty pilot data explicit', async () => {
-    const { fixture, host, beach, preview } = createMap();
+  it('keeps missing forecasts explicit', async () => {
+    const { fixture, beach, preview } = createMap();
     beach('Orle').click();
     await fixture.whenStable();
     fixture.detectChanges();
@@ -168,9 +172,13 @@ describe('Explore Map', () => {
     expect(preview()).toContain('SAMPLE DATA');
     expect(preview()).toContain('Safety unknown');
     expect(preview()).toContain('No sample forecast is available');
+  });
 
-    fixture.componentRef.setInput('beaches', []);
-    fixture.detectChanges();
+  it('keeps empty pilot data explicit', () => {
+    TestBed.overrideProvider(EXPLORE_MAP_FIXTURES, {
+      useValue: { beaches: [], forecasts: sampleBeachForecasts },
+    });
+    const { host, preview } = createMap();
     expect(host.textContent).toContain('No pilot beaches are available');
     expect(preview()).toContain('A preview will appear when pilot beaches are available');
     expect(host.querySelector('.beach-map-marker')).toBeNull();
