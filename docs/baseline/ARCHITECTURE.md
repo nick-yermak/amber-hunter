@@ -71,7 +71,7 @@ Independent safety states: AVAILABLE, CAUTION, UNSAFE, RESTRICTED, UNKNOWN (prop
 - Main agent: plan/implement/test/create PR, maintain Issue status within approved scope.
 - Independent reviewer: inspect diff, tests, architecture, accessibility/security; read-only on code.
 - Human: approve epics, major architecture and sensitive changes, merge and production secrets.
-- MCP sequence and GitHub tooling status are recorded in [Project State](../harness/MCP_REGISTRY.md).
+- MCP sequence and GitHub tooling status are recorded in [MCP Registry](../harness/MCP_REGISTRY.md).
 - Planned external skills: Angular development, frontend design, web design review, Angular bootstrap; review provenance, versions and scripts first.
 - Custom skills: `issue-to-pr`, `design-review`, `forecast-validation`.
 - CI progressively: format/lint/typecheck/unit/build; then E2E, accessibility, screenshots, security and forecast replay.
