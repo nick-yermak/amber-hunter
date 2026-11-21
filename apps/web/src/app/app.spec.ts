@@ -19,7 +19,7 @@ describe('App shell', () => {
   it.each([
     ['/', 'Coastal forecast', 'Overview', 'page'],
     ['/map', 'Explore Map', 'Map', 'page'],
-    ['/beaches/example', 'Beach Details', 'Map', 'location'],
+    ['/beaches/example', 'Beach not found', 'Map', 'location'],
     ['/academy', 'Amber Academy', 'Academy', 'page'],
     ['/academy/example?source=overview#intro', 'Article Reader', 'Academy', 'location'],
   ])('renders %s and marks the current destination in both layouts', async (url, heading, label, current) => {
@@ -38,6 +38,28 @@ describe('App shell', () => {
       expect(activeLinks[0].textContent?.trim()).toBe(label);
       expect(activeLinks[0].getAttribute('aria-current')).toBe(current);
     }
+  });
+
+  it('navigates from the map preview to details and restores selection on return', async () => {
+    const { fixture, host, router } = createShell();
+
+    await router.navigateByUrl('/map?beach=invalid');
+    await fixture.whenStable();
+    expect(host.querySelector('aside [aria-pressed="true"]')).toBeNull();
+    expect(host.querySelector('[aria-labelledby="beach-preview-heading"] a')).toBeNull();
+
+    host.querySelector<HTMLButtonElement>('aside button')!.click();
+    await fixture.whenStable();
+    const details = host.querySelector<HTMLAnchorElement>('a[href="/beaches/sobieszewo"]')!;
+    details.click();
+    await fixture.whenStable();
+    expect(router.url).toBe('/beaches/sobieszewo');
+    expect(host.querySelector('main h1')?.textContent).toContain('Sobieszewo');
+
+    host.querySelector<HTMLAnchorElement>('a[href="/map?beach=sobieszewo"]')!.click();
+    await fixture.whenStable();
+    expect(router.url).toBe('/map?beach=sobieszewo');
+    expect(host.querySelector('aside [aria-pressed="true"]')?.textContent).toContain('Sobieszewo');
   });
 
   it.each(['header nav', 'app-mobile-navigation nav'])('navigates between destinations from %s', async (selector) => {

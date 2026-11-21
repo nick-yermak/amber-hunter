@@ -1,0 +1,89 @@
+<article class="safe-page-gutters mx-auto w-full max-w-300 py-6 md:py-10">
+  <a routerLink="/map"
+     [queryParams]="beach() ? { beach: beach()?.id } : null"
+     class="inline-flex min-h-11 items-center rounded-control px-2 font-semibold text-action-strong underline underline-offset-4">
+    Back to Explore Map
+  </a>
+
+  @if (beach(); as beach) {
+    <header class="mb-6 mt-4">
+      <h1 class="text-3xl font-semibold tracking-tight text-ink md:text-4xl">{{ beach.name }}</h1>
+      <p class="mt-2 text-muted">{{ beach.locality }}</p>
+    </header>
+
+    <section aria-labelledby="sample-heading" class="rounded-card border border-divider bg-surface p-4 sm:p-6">
+      <h2 id="sample-heading" class="inline-block rounded-control bg-surface-warm px-3 py-2 text-sm font-bold tracking-wide">
+        SAMPLE DATA
+      </h2>
+      <p class="mt-2 text-sm text-muted">Conditions and safety flags are fictional. They do not describe current conditions or support visit recommendations.</p>
+
+      <section aria-labelledby="safety-heading" class="mt-4 rounded-control bg-surface-cool p-4">
+        <h3 id="safety-heading" class="font-semibold">Safety and access</h3>
+        <p class="mt-1 font-semibold">Real-world safety and access are unverified.</p>
+        <p class="mt-1 text-sm text-muted">Sample safety · {{ safetyLabels[forecast()?.safety ?? 'unknown'] }}</p>
+      </section>
+
+      <div class="mt-6 grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+        <section aria-labelledby="forecast-heading">
+          <h3 id="forecast-heading" class="text-xl font-semibold">Sample forecast</h3>
+          @if (forecast(); as sample) {
+            <dl class="mt-3 grid gap-4 rounded-control border border-divider p-4 sm:grid-cols-2">
+              <div>
+                <dt class="text-sm font-semibold">Experimental Amber Index</dt>
+                <dd class="mt-1 tabular-nums"><span class="text-3xl font-semibold">{{ sample.index }}</span> / 100</dd>
+              </div>
+              <div>
+                <dt class="text-sm font-semibold">Sample confidence</dt>
+                <dd class="mt-1">{{ sample.confidence }}</dd>
+              </div>
+              <div>
+                <dt class="text-sm font-semibold">Scenario freshness</dt>
+                <dd class="mt-1">{{ sample.freshness }}</dd>
+              </div>
+              <div>
+                <dt class="text-sm font-semibold">Scenario timestamp</dt>
+                <dd class="mt-1"><time [attr.datetime]="sample.capturedAt">{{ sample.capturedAt | date:'d MMM y, HH:mm':'UTC' }} UTC</time></dd>
+              </div>
+            </dl>
+            <p class="mt-3 text-sm text-muted">The sample score illustrates a modeled scenario. It does not represent the probability of finding amber.</p>
+          } @else {
+            <p class="mt-2 text-sm text-muted">No sample forecast is available for this beach.</p>
+          }
+        </section>
+
+        <section aria-labelledby="marine-heading">
+          <h3 id="marine-heading" class="text-xl font-semibold">Sample wind and waves</h3>
+          @if (forecast()?.marine; as marine) {
+            <dl class="mt-3 grid gap-3 rounded-control bg-surface-cool p-4">
+              <div>
+                <dt class="text-sm font-semibold">Wind speed</dt>
+                <dd>{{ marine.windKmh }} km/h</dd>
+              </div>
+              <div>
+                <dt class="text-sm font-semibold">Wave height</dt>
+                <dd>{{ marine.waveHeightMeters }} m</dd>
+              </div>
+            </dl>
+            <p class="mt-3 text-sm text-muted">Source: fictional pilot beach sample fixture.</p>
+          } @else {
+            <p class="mt-2 text-sm text-muted">No sample wind or wave values are available for this beach.</p>
+          }
+        </section>
+      </div>
+    </section>
+
+    <section aria-labelledby="source-heading" class="mt-5 rounded-card border border-divider bg-surface p-4 sm:p-6">
+      <h2 id="source-heading" class="text-xl font-semibold">Geographic source</h2>
+      <p class="mt-2 text-sm text-muted">{{ beach.source.reference }}</p>
+      <a [href]="beach.source.url"
+         class="mt-1 inline-flex min-h-11 items-center rounded-control font-semibold text-action-strong underline underline-offset-4">
+        View geographic source for {{ beach.name }} (PDF)
+      </a>
+    </section>
+  } @else {
+    <section class="mt-4 rounded-card border border-divider bg-surface p-4 sm:p-6">
+      <h1 class="text-3xl font-semibold tracking-tight">Beach not found</h1>
+      <p class="mt-2 text-muted">Open Explore Map to choose one of the pilot beaches.</p>
+    </section>
+  }
+</article>

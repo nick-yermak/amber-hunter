@@ -1,27 +1,31 @@
 import {
-  afterNextRender, Component, computed, DestroyRef, ElementRef, inject, input, signal, viewChild,
+  afterNextRender, Component, computed, DestroyRef, ElementRef, inject, input, linkedSignal, viewChild,
 } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BeachMap } from './beach-map';
-import { Beach, pilotBeaches } from './beaches';
-import { MapSampleForecast, mapSampleForecasts, sampleSafetyLabels } from './map-sample-forecasts';
+import { Beach, pilotBeaches } from '../beaches/pilot-beaches';
+import { BeachSampleForecast, sampleBeachForecasts, sampleSafetyLabels } from '../beaches/sample-beach-forecasts';
 
 @Component({
   selector: 'app-explore-map',
   standalone: true,
-  imports: [BeachMap, DatePipe],
+  imports: [BeachMap, DatePipe, RouterLink],
   templateUrl: './explore-map.html',
 })
 export class ExploreMap {
   readonly beaches = input(pilotBeaches, {
     transform: (beaches: readonly Beach[] | undefined) => beaches ?? pilotBeaches,
   });
-  readonly forecasts = input(mapSampleForecasts, {
-    transform: (forecasts: Readonly<Partial<Record<string, MapSampleForecast>>> | undefined) =>
-      forecasts ?? mapSampleForecasts,
+  readonly forecasts = input(sampleBeachForecasts, {
+    transform: (forecasts: Readonly<Partial<Record<string, BeachSampleForecast>>> | undefined) =>
+      forecasts ?? sampleBeachForecasts,
   });
 
-  protected readonly selectedId = signal<string | null>(null);
+  private readonly queryParams = toSignal(inject(ActivatedRoute).queryParamMap);
+
+  protected readonly selectedId = linkedSignal(() => this.queryParams()?.get('beach') ?? null);
   protected readonly selectedBeach = computed(() =>
     this.beaches().find((beach) => beach.id === this.selectedId()),
   );

@@ -1,7 +1,8 @@
+import { provideRouter } from '@angular/router';
 import { TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
 import { ExploreMap } from './explore-map';
-import { mapSampleForecasts } from './map-sample-forecasts';
+import { sampleBeachForecasts } from '../beaches/sample-beach-forecasts';
 
 const engine = vi.hoisted(() => ({
   fail: false,
@@ -39,6 +40,7 @@ vi.mock('maplibre-gl', () => ({
 
 describe('Explore Map', () => {
   beforeEach(() => {
+    TestBed.configureTestingModule({ providers: [provideRouter([])] });
     engine.fail = false;
     engine.eventHandlers.clear();
     engine.remove.mockClear();
@@ -88,14 +90,16 @@ describe('Explore Map', () => {
   it.each(['unsafe', 'restricted', 'unknown'] as const)('shows independent %s safety even for a high current index', (safety) => {
     const { fixture, host, beach, preview } = createMap();
     fixture.componentRef.setInput('forecasts', {
-      sobieszewo: { ...mapSampleForecasts['sobieszewo']!, index: 100, safety },
+      sobieszewo: { ...sampleBeachForecasts['sobieszewo']!, index: 100, safety },
     });
     beach('Sobieszewo').click();
     fixture.detectChanges();
     expect(preview().toLowerCase()).toContain(safety);
     expect(preview()).toContain('SAMPLE DATA');
     expect(preview()).toContain('100 / 100');
-    expect(host.querySelector('[aria-labelledby="beach-preview-heading"] :is(button, a)')).toBeNull();
+    const actions = host.querySelectorAll('[aria-labelledby="beach-preview-heading"] :is(button, a)');
+    expect(actions).toHaveLength(1);
+    expect(actions[0].getAttribute('href')).toBe('/beaches/sobieszewo');
   });
 
   it('keeps missing forecasts and empty pilot data explicit', () => {
