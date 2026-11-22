@@ -69,7 +69,7 @@ describe('App shell', () => {
     await fixture.whenStable();
     const article = host.querySelector('main article')!;
     expect(article.querySelector('h1')?.textContent?.trim()).toBe('Baltic amber');
-    expect(host.querySelector('main a')?.textContent?.trim()).toBe('Back to Amber Academy');
+    expect(article.querySelector('h1 + a')?.textContent?.trim()).toBe('Back to Amber Academy');
     expect(article.querySelector('h2')?.textContent).toBe('Sources');
     expect(article.querySelector('li a')?.textContent).toBe('Reference');
     expect(host.querySelector('main a')?.getAttribute('href')).toBe('/academy');
@@ -129,6 +129,7 @@ describe('App shell', () => {
     expect(document.title).toBe('Чтение статьи');
     expect(host.textContent).toContain('Статьи пока доступны только на английском языке.');
     expect(article?.getAttribute('lang')).toBe('en');
+    expect(article?.querySelector('h1 + a')?.getAttribute('lang')).toBe('ru');
     expect(article?.querySelector('h1')?.textContent?.trim()).toBe('Baltic amber');
     expect(host.querySelector('main article')).toBe(article);
     expect(router.url).toBe(articleUrl);

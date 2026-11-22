@@ -9,9 +9,6 @@ import { AcademyArticle } from './academy-library';
   template: `
     <div class="mx-auto max-w-3xl px-4 py-8 sm:px-8 md:py-12">
       @if (article(); as entry) {
-        <a routerLink="/academy" class="mb-2 inline-flex min-h-11 items-center text-action underline underline-offset-4">
-          {{ i18n.text('academyBack') }}
-        </a>
         @if (i18n.language() !== entry.lang) {
           <p id="article-language" class="mb-4 text-sm text-muted">{{ i18n.text('academyFallback') }}</p>
         }
@@ -20,6 +17,10 @@ import { AcademyArticle } from './academy-library';
               [attr.aria-describedby]="i18n.language() !== entry.lang ? 'article-language' : null">
             {{ entry.title }}
           </h1>
+          <a routerLink="/academy" [attr.lang]="i18n.language()"
+             class="mt-2 inline-flex min-h-11 items-center text-action underline underline-offset-4">
+            {{ i18n.text('academyBack') }}
+          </a>
           <p class="mt-4 text-lg leading-relaxed text-muted">{{ entry.summary }}</p>
           <div
             class="mt-7 leading-relaxed wrap-break-word
