@@ -103,16 +103,18 @@ describe('App shell', () => {
     await router.navigateByUrl(mapUrl);
     await fixture.whenStable();
 
-    const selector = host.querySelector<HTMLSelectElement>('header select')!;
+    const selector = host.querySelector<HTMLButtonElement>('app-language-selector > button')!;
     const selected = host.querySelector('aside [aria-pressed="true"]');
     const choose = async (language: string) => {
-      selector.value = language;
-      selector.dispatchEvent(new Event('change'));
+      selector.click();
       await fixture.whenStable();
+      host.querySelector<HTMLButtonElement>(`#language-options button[lang="${language}"]`)!.click();
+      await fixture.whenStable();
+      expect(selector.getAttribute('aria-expanded')).toBe('false');
     };
 
     await choose('pl');
-    expect(selector.labels?.[0].textContent).toContain('Język');
+    expect(selector.textContent).toContain('Język');
     expect(document.documentElement.lang).toBe('pl');
     expect(document.title).toBe('Mapa wybrzeża');
     expect(host.querySelector('main h1')?.textContent).toBe('Mapa wybrzeża');
