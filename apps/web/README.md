@@ -51,3 +51,30 @@ The installed CLI advertised `ai_tutor`, `devserver_wait_for_build` (read-only b
 - Clean frozen install passed in a temporary copy of the workspace manifests using the populated package store. pnpm left optional dependency build scripts disabled.
 - Production build passed. All five router unit tests passed.
 - The local dev server returned the SPA entry point for all five direct URLs. Headless Chrome rendered the expected heading on each URL, using `example` for both slug routes.
+
+## Amber Academy authoring
+
+Store English articles in `content/academy/en/`. Begin each file with two
+`---` delimiter lines enclosing exactly one plain-text line for each field:
+`id`, `slug`, `lang`, `title`, and `summary`. Use `key: value` syntax.
+
+- Use unique lowercase IDs and URL slugs with letters, numbers and single
+  hyphens. Keep the ID stable across future translations and the slug stable
+  for existing links. The current language value is `en`.
+- Use level-two headings, paragraphs, emphasis, ordered and unordered lists,
+  and inline HTTPS links. Include a Sources section. The reader supplies the
+  page title as its level-one heading.
+- Images need descriptive alt text and a path under `/academy-images/` to a
+  PNG, JPEG, WebP or AVIF in `public/academy-images/`. The generator rejects
+  missing files, symbolic links in image paths, unsupported paths,
+  reference-style links and raw HTML.
+- Future translations can use sibling language directories, matching IDs and
+  language-specific slugs. Add locale selection and generation when translated
+  content is introduced.
+
+The workspace web build and test commands regenerate
+`public/academy-content/en.json` before Angular runs. `web:start` watches the
+article sources and image paths and regenerates the asset. Refresh an open
+page to read a new version if the dev server has not reloaded the browser.
+A validation error identifies the source file and stops generation. During
+development, fix the source and restart the server after a validation failure.

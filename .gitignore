@@ -20,3 +20,6 @@ dist/
 coverage/
 .angular/
 .wrangler/
+
+# Generated Academy assets
+/apps/web/public/academy-content/
