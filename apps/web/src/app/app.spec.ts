@@ -1,13 +1,28 @@
+import { Location } from '@angular/common';
+import { provideLocationMocks } from '@angular/common/testing';
+import { filter, firstValueFrom } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
+import { AcademyLibrary } from './features/academy/academy-library';
 import { App } from './app';
 import { appConfig } from './app.config';
+
+const academyArticles = [
+  { id: 'amber', slug: 'amber', lang: 'en', title: 'Baltic amber', summary: 'About amber.',
+    html: '<h2>Sources</h2><ul><li><a href="https://example.org">Reference</a></li></ul>' },
+  { id: 'waves', slug: 'waves', lang: 'en', title: 'Wind and waves', summary: 'About waves.',
+    html: '<h2>Wave basics</h2><p>Wind generates waves.</p>' },
+];
 
 describe('App shell', () => {
   function createShell() {
     TestBed.configureTestingModule({
       imports: [App],
-      providers: appConfig.providers,
+      providers: [
+        ...appConfig.providers,
+        provideLocationMocks(),
+        { provide: AcademyLibrary, useValue: { load: async () => academyArticles } },
+      ],
     });
 
     const fixture = TestBed.createComponent(App);
@@ -21,7 +36,7 @@ describe('App shell', () => {
     ['/map', 'Explore Map', 'Map', 'page'],
     ['/beaches/example', 'Beach not found', 'Map', 'location'],
     ['/academy', 'Amber Academy', 'Academy', 'page'],
-    ['/academy/example?source=overview#intro', 'Article Reader', 'Academy', 'location'],
+    ['/academy/example?source=overview#intro', 'Article not found', 'Academy', 'location'],
   ])('renders %s and marks the current destination in both layouts', async (url, heading, label, current) => {
     const { fixture, host, router } = createShell();
 
@@ -38,6 +53,42 @@ describe('App shell', () => {
       expect(activeLinks[0].textContent?.trim()).toBe(label);
       expect(activeLinks[0].getAttribute('aria-current')).toBe(current);
     }
+  });
+
+  it('lists the articles and renders a deep link using only the path slug', async () => {
+    const { fixture, host, router } = createShell();
+    await router.navigateByUrl('/academy');
+    await fixture.whenStable();
+    expect(host.querySelector('main ul')?.textContent).toContain('About waves.');
+    expect(host.querySelector('main a')?.getAttribute('href')).toBe('/academy/amber');
+
+    await router.navigateByUrl('/academy/amber;slug=waves?slug=waves&article=invalid');
+    await fixture.whenStable();
+    const article = host.querySelector('main article')!;
+    expect(article.querySelector('h1')?.textContent?.trim()).toBe('Baltic amber');
+    expect(article.querySelector('h2')?.textContent).toBe('Sources');
+    expect(article.querySelector('li a')?.textContent).toBe('Reference');
+    expect(host.querySelector('main a')?.getAttribute('href')).toBe('/academy');
+
+    const reader = host.querySelector('app-article-reader');
+    await router.navigateByUrl('/academy/waves');
+    await fixture.whenStable();
+    expect(host.querySelector('main h1')?.textContent?.trim()).toBe('Wind and waves');
+    expect(host.querySelector('app-article-reader')).toBe(reader);
+
+    router.setUpLocationChangeListener();
+    const location = TestBed.inject(Location);
+    for (const [direction, title] of [['back', 'Baltic amber'], ['forward', 'Wind and waves']] as const) {
+      const navigation = firstValueFrom(router.events.pipe(filter((event) => event instanceof NavigationEnd)));
+      location[direction]();
+      await navigation;
+      await fixture.whenStable();
+      expect(host.querySelector('main h1')?.textContent?.trim()).toBe(title);
+    }
+
+    await router.navigateByUrl('/academy/missing;slug=amber?slug=amber');
+    await fixture.whenStable();
+    expect(host.querySelector('main h1')?.textContent?.trim()).toBe('Article not found');
   });
 
   it('keeps beach identity and sample forecasts independent of query parameters', async () => {

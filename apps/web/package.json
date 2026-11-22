@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "test": "ng test --watch=false",
+    "start": "node scripts/serve-academy.mjs",
+    "build": "node scripts/academy-content.mjs && ng build",
+    "test": "node --test scripts/academy-content.test.mjs && node scripts/academy-content.mjs && ng test --watch=false",
     "mcp": "ng mcp --read-only --local-only --root ."
   },
   "private": true,
@@ -25,6 +25,7 @@
     "@angular/compiler-cli": "^22.2.0",
     "@tailwindcss/postcss": "^4.3.5",
     "jsdom": "^30.0.0",
+    "marked": "18.0.14",
     "postcss": "^8.5.32",
     "tailwindcss": "^4.3.5",
     "typescript": "~6.0.2",
