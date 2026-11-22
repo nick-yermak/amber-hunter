@@ -33,6 +33,13 @@ Use these boundaries under `apps/web/src/app/` as code is added.
 - Use Signals for local reactive state where appropriate and `computed()` for derived values. Use the Angular Router as the source of navigation state, including active links. Avoid duplicate state and unnecessary manual subscriptions.
 - Prefer Angular template control flow for conditions and loops. Use semantic HTML and accessible native interactions. Reuse [Baltic Explorer tokens](../baseline/DESIGN_SYSTEM.md#light-theme-tokens). Use Angular CDK when native HTML and CSS cannot meet the interaction requirements.
 
+## Route inputs
+
+- Use router component input binding for inputs intentionally supplied by path or matrix parameters, static route data, or resolvers. Declare those inputs explicitly on the routed component.
+- Read query parameters explicitly through `ActivatedRoute.queryParamMap` and react to changes when the router reuses the component. Automatic query parameter binding is disabled in the app router.
+- Treat every URL-derived value as untrusted. Validate it at runtime where it is consumed before using it as a domain identifier or converting it to a domain value. Define safe behavior for missing and invalid values.
+- Cover absent, invalid, and changing route inputs in router-integrated tests. For query-driven state, include direct links and history navigation when the feature supports them.
+
 ## Abstraction and review
 
 Prefer a pure function when logic needs neither dependency injection nor managed state. Extract reusable code once real consumers or an explicit boundary justify the move. Avoid generic base classes, wrappers around trivial functions, barrel files for every folder, empty scaffolding, and additional state-management or infrastructure packages. Keep reorganizations within the issue scope.

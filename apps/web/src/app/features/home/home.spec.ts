@@ -1,7 +1,21 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
+import { appConfig } from '../../app.config';
 import { Home } from './home';
 import { Forecast, sampleForecast } from './sample-forecast';
+
+describe('Home route', () => {
+  it.each(['/', '/?extra=kept', '/?forecast=unexpected'])('renders the sample forecast at %s', async (url) => {
+    TestBed.configureTestingModule({ providers: appConfig.providers });
+    const harness = await RouterTestingHarness.create(url);
+    const home: Home = harness.routeDebugElement!.componentInstance;
+
+    expect(home.forecast()).toBeUndefined();
+    expect(harness.routeNativeElement?.querySelector('[role="img"]')?.getAttribute('aria-label'))
+      .toBe('Experimental Amber Index: 71 out of 100, sample data');
+  });
+});
 
 describe('Home forecast', () => {
   async function render(forecast?: Forecast) {
