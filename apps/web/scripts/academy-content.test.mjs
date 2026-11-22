@@ -52,11 +52,16 @@ test('images require alt text and an existing contained raster path', (context) 
   mkdirSync(images);
   writeFileSync(join(images, 'amber.png'), '');
   symlinkSync(join(images, 'amber.png'), join(images, 'alias.png'));
+  const specimens = join(images, 'specimens');
+  mkdirSync(specimens);
+  writeFileSync(join(specimens, 'amber.png'), '');
+  symlinkSync(specimens, join(images, 'linked-specimens'), 'dir');
   assert.match(compileArticle(article('![A specimen](/academy-images/amber.png)'), assets).html, /alt="A specimen"/);
+  assert.match(compileArticle(article('![Amber](/academy-images/specimens/amber.png)'), assets).html, /alt="Amber"/);
   for (const image of [
     '![](/academy-images/amber.png)', '![Amber](/academy-images/absent.png)',
     '![Amber](/academy-images/../amber.png)', '![Amber](/academy-images/%2e%2e/amber.png)',
-    '![Amber](/academy-images/alias.png)', '![Amber](https://example.org/amber.png)',
+    '![Amber](/academy-images/alias.png)', '![Amber](/academy-images/linked-specimens/amber.png)', '![Amber](https://example.org/amber.png)',
     '![Amber](/academy-images/amber.svg)',
   ]) assert.throws(() => compileArticle(article(image), assets), /Image/);
 });

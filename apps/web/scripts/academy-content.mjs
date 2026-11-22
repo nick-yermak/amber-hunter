@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, realpathSync, renameSync, rmSync, writeFileSync } from 'node:fs';
-import { resolve, sep } from 'node:path';
+import { existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Marked } from 'marked';
 
@@ -28,10 +28,17 @@ function validateImage(token, assets) {
   if (!token.text.trim() || !/^\/academy-images\/(?:[a-z0-9-]+\/)*[a-z0-9-]+\.(?:png|jpe?g|webp|avif)$/.test(token.href)) {
     throw new Error('Images require alt text and a local /academy-images/ raster path');
   }
-  const file = resolve(assets, token.href.slice(1));
-  if (!existsSync(file) || !lstatSync(file).isFile() ||
-      !realpathSync(file).startsWith(realpathSync(assets) + sep)) {
-    throw new Error('Image must resolve to a regular file inside public');
+  const segments = token.href.slice(1).split('/');
+  const filename = segments.pop();
+  let directory = assets;
+  for (const segment of segments) {
+    directory = resolve(directory, segment);
+    if (!lstatSync(directory, { throwIfNoEntry: false })?.isDirectory()) {
+      throw new Error('Image directories must exist and cannot be symbolic links');
+    }
+  }
+  if (!lstatSync(resolve(directory, filename), { throwIfNoEntry: false })?.isFile()) {
+    throw new Error('Image must be a regular file inside public');
   }
 }
 

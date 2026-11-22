@@ -66,6 +66,7 @@ describe('App shell', () => {
     await fixture.whenStable();
     const article = host.querySelector('main article')!;
     expect(article.querySelector('h1')?.textContent?.trim()).toBe('Baltic amber');
+    expect(article.querySelector('h1 + a')?.textContent?.trim()).toBe('Back to Amber Academy');
     expect(article.querySelector('h2')?.textContent).toBe('Sources');
     expect(article.querySelector('li a')?.textContent).toBe('Reference');
     expect(host.querySelector('main a')?.getAttribute('href')).toBe('/academy');
@@ -89,6 +90,7 @@ describe('App shell', () => {
     await router.navigateByUrl('/academy/missing;slug=amber?slug=amber');
     await fixture.whenStable();
     expect(host.querySelector('main h1')?.textContent?.trim()).toBe('Article not found');
+    expect(host.querySelector('main h1 + a')?.textContent?.trim()).toBe('Back to Amber Academy');
   });
 
   it('keeps beach identity and sample forecasts independent of query parameters', async () => {

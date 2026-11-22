@@ -66,7 +66,8 @@ Store English articles in `content/academy/en/`. Begin each file with two
   page title as its level-one heading.
 - Images need descriptive alt text and a path under `/academy-images/` to a
   PNG, JPEG, WebP or AVIF in `public/academy-images/`. The generator rejects
-  missing files, unsupported paths, reference-style links and raw HTML.
+  missing files, symbolic links in image paths, unsupported paths,
+  reference-style links and raw HTML.
 - Future translations can use sibling language directories, matching IDs and
   language-specific slugs. Add locale selection and generation when translated
   content is introduced.

@@ -7,14 +7,14 @@ import { AcademyArticle } from './academy-library';
   imports: [RouterLink],
   template: `
     <div class="mx-auto max-w-3xl px-4 py-8 sm:px-8 md:py-12" lang="en">
-      <a routerLink="/academy" class="mb-5 inline-flex min-h-11 items-center text-action underline underline-offset-4">
-        Back to Amber Academy
-      </a>
       @if (article(); as entry) {
         <article aria-labelledby="article-title">
           <h1 #heading id="article-title" tabindex="-1" class="text-3xl font-semibold tracking-tight sm:text-4xl">
             {{ entry.title }}
           </h1>
+          <a routerLink="/academy" class="mt-2 inline-flex min-h-11 items-center text-action underline underline-offset-4">
+            Back to Amber Academy
+          </a>
           <p class="mt-4 text-lg leading-relaxed text-muted">{{ entry.summary }}</p>
           <div
             class="mt-7 leading-relaxed wrap-break-word
@@ -29,6 +29,9 @@ import { AcademyArticle } from './academy-library';
         <h1 #heading tabindex="-1" class="text-3xl font-semibold">
           {{ article() === false ? 'Article unavailable' : 'Article not found' }}
         </h1>
+        <a routerLink="/academy" class="mt-2 inline-flex min-h-11 items-center text-action underline underline-offset-4">
+          Back to Amber Academy
+        </a>
         <p class="mt-4 text-muted">
           {{ article() === false ? 'Refresh the page to try again.' : 'Choose an article from Amber Academy.' }}
         </p>
