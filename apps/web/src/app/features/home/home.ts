@@ -1,6 +1,7 @@
-import { Component, computed, input } from '@angular/core';
+import { Localization } from '../../core/localization/localization';
+import { inject, Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Forecast, safetyDetails, sampleForecast } from './sample-forecast';
+import { Forecast, safetyNotes, sampleForecast } from './sample-forecast';
 
 @Component({
   selector: 'app-home',
@@ -9,7 +10,8 @@ import { Forecast, safetyDetails, sampleForecast } from './sample-forecast';
   templateUrl: './home.html',
 })
 export class Home {
+  protected readonly i18n = inject(Localization);
   readonly forecast = input<Forecast>();
   protected readonly currentForecast = computed(() => this.forecast() ?? sampleForecast);
-  protected readonly safetyDetails = safetyDetails;
+  protected readonly safetyNotes = safetyNotes;
 }

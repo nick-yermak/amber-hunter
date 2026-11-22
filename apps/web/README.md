@@ -78,3 +78,11 @@ article sources and image paths and regenerates the asset. Refresh an open
 page to read a new version if the dev server has not reloaded the browser.
 A validation error identifies the source file and stops generation. During
 development, fix the source and restart the server after a validation failure.
+
+## Runtime localization
+
+Add UI messages to the typed dictionaries in `src/app/core/localization/`. English defines the keys and interpolation placeholders. Add matching Polish and Russian entries and preserve placeholder names such as `{beach}`. Use `Localization.text()` from templates and `number()` or `date()` for example values without changing their source units or timezone. Preserve explicit wording for experimental forecasts, sample data and safety limitations.
+
+Language selection uses the saved EN/PL/RU preference, then the first supported browser language, then English. Storage is optional. The selector updates the current page without navigation. English Academy titles, summaries and bodies carry their own content language, with a localized notice in Polish and Russian. The library loader owns the language-specific JSON collection URL. When adding a collection, extend the loader and its validation with the content language while preserving the route slugs and existing build and sanitization pipeline.
+
+Run `corepack pnpm web:test` and `corepack pnpm web:build`. Verify the selector by keyboard and at 390, 768 and 1440 pixels. Check reload persistence, deep links, decimal and timestamp rendering, Academy fallback and sample safety states in each language.

@@ -6,6 +6,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { AcademyLibrary } from './features/academy/academy-library';
 import { App } from './app';
 import { appConfig } from './app.config';
+import { languagePreferenceKey } from './core/localization/localization';
 
 const academyArticles = [
   { id: 'amber', slug: 'amber', lang: 'en', title: 'Baltic amber', summary: 'About amber.',
@@ -15,6 +16,8 @@ const academyArticles = [
 ];
 
 describe('App shell', () => {
+  afterEach(() => localStorage.removeItem(languagePreferenceKey));
+
   function createShell() {
     TestBed.configureTestingModule({
       imports: [App],
@@ -66,7 +69,7 @@ describe('App shell', () => {
     await fixture.whenStable();
     const article = host.querySelector('main article')!;
     expect(article.querySelector('h1')?.textContent?.trim()).toBe('Baltic amber');
-    expect(article.querySelector('h1 + a')?.textContent?.trim()).toBe('Back to Amber Academy');
+    expect(host.querySelector('main a')?.textContent?.trim()).toBe('Back to Amber Academy');
     expect(article.querySelector('h2')?.textContent).toBe('Sources');
     expect(article.querySelector('li a')?.textContent).toBe('Reference');
     expect(host.querySelector('main a')?.getAttribute('href')).toBe('/academy');
@@ -91,6 +94,53 @@ describe('App shell', () => {
     await fixture.whenStable();
     expect(host.querySelector('main h1')?.textContent?.trim()).toBe('Article not found');
     expect(host.querySelector('main h1 + a')?.textContent?.trim()).toBe('Back to Amber Academy');
+  });
+
+  it('switches the whole shell without navigation and preserves map and reader history', async () => {
+    const { fixture, host, router } = createShell();
+    const mapUrl = '/map?beach=mikoszewo&source=overview#preview';
+    const articleUrl = '/academy/amber?source=map#sources';
+    await router.navigateByUrl(mapUrl);
+    await fixture.whenStable();
+
+    const selector = host.querySelector<HTMLSelectElement>('header select')!;
+    const selected = host.querySelector('aside [aria-pressed="true"]');
+    const choose = async (language: string) => {
+      selector.value = language;
+      selector.dispatchEvent(new Event('change'));
+      await fixture.whenStable();
+    };
+
+    await choose('pl');
+    expect(selector.labels?.[0].textContent).toContain('Język');
+    expect(document.documentElement.lang).toBe('pl');
+    expect(document.title).toBe('Mapa wybrzeża');
+    expect(host.querySelector('main h1')?.textContent).toBe('Mapa wybrzeża');
+    expect(host.querySelector('aside [aria-pressed="true"]')).toBe(selected);
+    expect(host.textContent).toContain('Ograniczony dostęp w tym scenariuszu');
+    expect(host.textContent).toContain('DANE PRZYKŁADOWE');
+    expect(router.url).toBe(mapUrl);
+
+    await router.navigateByUrl(articleUrl);
+    await fixture.whenStable();
+    const article = host.querySelector('main article');
+    await choose('ru');
+    expect(document.documentElement.lang).toBe('ru');
+    expect(document.title).toBe('Чтение статьи');
+    expect(host.textContent).toContain('Статьи пока доступны только на английском языке.');
+    expect(article?.getAttribute('lang')).toBe('en');
+    expect(article?.querySelector('h1')?.textContent?.trim()).toBe('Baltic amber');
+    expect(host.querySelector('main article')).toBe(article);
+    expect(router.url).toBe(articleUrl);
+
+    router.setUpLocationChangeListener();
+    const navigation = firstValueFrom(router.events.pipe(filter((event) => event instanceof NavigationEnd)));
+    TestBed.inject(Location).back();
+    await navigation;
+    await fixture.whenStable();
+    expect(router.url).toBe(mapUrl);
+    expect(document.title).toBe('Карта побережья');
+    expect(host.querySelector('aside [aria-pressed="true"]')?.textContent).toContain('Mikoszewo');
   });
 
   it('keeps beach identity and sample forecasts independent of query parameters', async () => {

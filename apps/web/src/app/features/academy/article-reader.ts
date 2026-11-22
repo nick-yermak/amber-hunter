@@ -1,4 +1,5 @@
-import { afterRenderEffect, Component, ElementRef, input, viewChild } from '@angular/core';
+import { Localization } from '../../core/localization/localization';
+import { inject, afterRenderEffect, Component, ElementRef, input, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AcademyArticle } from './academy-library';
 
@@ -6,15 +7,19 @@ import { AcademyArticle } from './academy-library';
   selector: 'app-article-reader',
   imports: [RouterLink],
   template: `
-    <div class="mx-auto max-w-3xl px-4 py-8 sm:px-8 md:py-12" lang="en">
+    <div class="mx-auto max-w-3xl px-4 py-8 sm:px-8 md:py-12">
       @if (article(); as entry) {
-        <article aria-labelledby="article-title">
-          <h1 #heading id="article-title" tabindex="-1" class="text-3xl font-semibold tracking-tight sm:text-4xl">
+        <a routerLink="/academy" class="mb-2 inline-flex min-h-11 items-center text-action underline underline-offset-4">
+          {{ i18n.text('academyBack') }}
+        </a>
+        @if (i18n.language() !== entry.lang) {
+          <p id="article-language" class="mb-4 text-sm text-muted">{{ i18n.text('academyFallback') }}</p>
+        }
+        <article aria-labelledby="article-title" [attr.lang]="entry.lang">
+          <h1 #heading id="article-title" tabindex="-1" class="text-3xl font-semibold tracking-tight sm:text-4xl"
+              [attr.aria-describedby]="i18n.language() !== entry.lang ? 'article-language' : null">
             {{ entry.title }}
           </h1>
-          <a routerLink="/academy" class="mt-2 inline-flex min-h-11 items-center text-action underline underline-offset-4">
-            Back to Amber Academy
-          </a>
           <p class="mt-4 text-lg leading-relaxed text-muted">{{ entry.summary }}</p>
           <div
             class="mt-7 leading-relaxed wrap-break-word
@@ -27,19 +32,20 @@ import { AcademyArticle } from './academy-library';
         </article>
       } @else {
         <h1 #heading tabindex="-1" class="text-3xl font-semibold">
-          {{ article() === false ? 'Article unavailable' : 'Article not found' }}
+          {{ i18n.text(article() === false ? 'articleUnavailable' : 'articleMissing') }}
         </h1>
         <a routerLink="/academy" class="mt-2 inline-flex min-h-11 items-center text-action underline underline-offset-4">
-          Back to Amber Academy
+          {{ i18n.text('academyBack') }}
         </a>
         <p class="mt-4 text-muted">
-          {{ article() === false ? 'Refresh the page to try again.' : 'Choose an article from Amber Academy.' }}
+          {{ i18n.text(article() === false ? 'articleRetry' : 'articleChoose') }}
         </p>
       }
     </div>
   `,
 })
 export class ArticleReader {
+  protected readonly i18n = inject(Localization);
   readonly article = input.required<AcademyArticle | null | false>();
   private readonly heading = viewChild<ElementRef<HTMLHeadingElement>>('heading');
 

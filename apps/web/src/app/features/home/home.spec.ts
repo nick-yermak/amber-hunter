@@ -44,7 +44,7 @@ describe('Home forecast', () => {
   it('renders seven dated outlook entries, the eligible example window and only general navigation', async () => {
     const host = await render();
     expect(host.querySelectorAll('ol > li')).toHaveLength(7);
-    expect(host.querySelector('ol time[datetime="2030-10-13"]')?.textContent).toBe('Sun, 13 Oct');
+    expect(host.querySelector('ol time[datetime="2030-10-13"]')?.textContent).toBe('Sun 13 Oct');
     expect(host.querySelector('ol')?.textContent).toContain('1.2 m');
     expect(host.textContent).toContain('07:00–10:00 CEST');
     expect(host.textContent).not.toContain('10:00–13:00 CEST');

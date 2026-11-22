@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Localization } from './core/localization/localization';
+import { inject, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Header } from './core/header/header';
 import { MobileNavigation } from './core/mobile-navigation/mobile-navigation';
@@ -17,7 +18,7 @@ import { MobileNavigation } from './core/mobile-navigation/mobile-navigation';
              rtl:focus:start-[max(1rem,calc(env(safe-area-inset-right)+0.5rem))]
              focus:rounded-control focus:bg-surface focus:px-4 focus:py-3 focus:text-action-strong"
       (click)="mainContent.focus()"
-    >Skip to content</button>
+    >{{ i18n.text('skip') }}</button>
     <app-header />
     <main
       #mainContent
@@ -29,4 +30,6 @@ import { MobileNavigation } from './core/mobile-navigation/mobile-navigation';
     <app-mobile-navigation />
   `,
 })
-export class App {}
+export class App {
+  protected readonly i18n = inject(Localization);
+}
