@@ -6,7 +6,7 @@ import { Language, Localization } from './localization';
   host: {
     class: 'relative block',
     '(document:pointerdown)': 'dismissOutside($event.target)',
-    '(focusout)': 'dismissOutside($event.relatedTarget)',
+    '(focusout)': 'dismissOnFocusOut($event.relatedTarget)',
     '(keydown.escape)': 'dismissOnEscape($event)',
   },
   template: `
@@ -78,6 +78,11 @@ export class LanguageSelector {
     if (this.open() && (!(target instanceof Node) || !this.host.nativeElement.contains(target))) {
       this.open.set(false);
     }
+  }
+
+  protected dismissOnFocusOut(target: EventTarget | null): void {
+    // Safari can blur the trigger before clicking an option without focusing it.
+    if (target instanceof Node) this.dismissOutside(target);
   }
 
   protected dismissOnEscape(event: Event): void {

@@ -146,6 +146,32 @@ describe('App shell', () => {
     expect(host.querySelector('aside [aria-pressed="true"]')?.textContent).toContain('Mikoszewo');
   });
 
+  it('keeps a language option clickable after Safari blurs the trigger without a focus destination', async () => {
+    const { fixture, host, router } = createShell();
+    const url = '/?source=safari#preview';
+    await router.navigateByUrl(url);
+    await fixture.whenStable();
+
+    const trigger = host.querySelector<HTMLButtonElement>('app-language-selector > button')!;
+    trigger.click();
+    await fixture.whenStable();
+
+    const option = host.querySelector<HTMLButtonElement>('#language-options button[lang="pl"]')!;
+    option.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true }));
+    trigger.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: null }));
+    await fixture.whenStable();
+    expect(host.querySelector('#language-options button[lang="pl"]')).toBe(option);
+
+    option.click();
+    await fixture.whenStable();
+    expect(trigger.getAttribute('aria-expanded')).toBe('false');
+    expect(document.activeElement).toBe(trigger);
+    expect(document.documentElement.lang).toBe('pl');
+    expect(host.querySelector('main h1')?.textContent?.trim()).toBe('Prognoza dla wybrzeża');
+    expect(localStorage.getItem(languagePreferenceKey)).toBe('pl');
+    expect(router.url).toBe(url);
+  });
+
   it('keeps beach identity and sample forecasts independent of query parameters', async () => {
     const { fixture, host, router } = createShell();
 
