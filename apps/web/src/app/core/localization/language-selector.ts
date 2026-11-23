@@ -60,7 +60,13 @@ export class LanguageSelector {
   private readonly trigger = viewChild.required<ElementRef<HTMLButtonElement>>('trigger');
 
   protected toggle(): void {
-    this.open.update((value) => !value);
+    if (this.open()) {
+      this.open.set(false);
+      return;
+    }
+
+    this.trigger().nativeElement.focus();
+    this.open.set(true);
   }
 
   protected selectLanguage(language: Language): void {
