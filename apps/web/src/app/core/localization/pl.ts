@@ -42,7 +42,7 @@ export const pl = {
   emptyHomeNote: "Brak wpisów w tym przykładzie.",
   mapTitle: "Mapa wybrzeża",
   beachPreviews: "Podgląd plaż",
-  previewsNote: "DANE PRZYKŁADOWE · Fikcyjne plaże i poglądowe przedziały czasowe.",
+  previewsNote: "DANE PRZYKŁADOWE · Przykładowe prognozy i przedziały czasowe dla plaż pilotażowych.",
   window: "Przykładowy korzystny przedział",
   windowWithheld: "Korzystny przedział ukryty",
   outlook: "Perspektywa na siedem dni",

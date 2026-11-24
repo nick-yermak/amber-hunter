@@ -40,7 +40,7 @@ export const en = {
   emptyHomeNote: "There are no entries for this example.",
   mapTitle: "Explore Map",
   beachPreviews: "Beach previews",
-  previewsNote: "SAMPLE DATA · Fictional beaches and illustrative time windows.",
+  previewsNote: "SAMPLE DATA · Illustrative forecasts and time windows for pilot beaches.",
   window: "Sample favorable window",
   windowWithheld: "Favorable window withheld",
   outlook: "Seven-day outlook",
