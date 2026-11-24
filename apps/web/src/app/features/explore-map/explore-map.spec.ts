@@ -213,16 +213,22 @@ describe('Explore Map', () => {
       }
       TestBed.inject(Localization).select(language);
       const harness = await RouterTestingHarness.create('/');
+      const homePage = harness.routeNativeElement!;
+      const previews = homePage.querySelector('section[aria-labelledby="previews-heading"]')!;
       const home = new Map<string, Element>(Array.from(
-        harness.routeNativeElement!.querySelectorAll('#previews-heading ~ ul > li'),
+        previews.querySelectorAll('ul > li'),
         (card) => [card.querySelector('h3')!.textContent!.trim(), card],
       ));
-      const regionalHeading = harness.routeNativeElement!.querySelector('#amber-index-heading');
+      const regionalHeading = homePage.querySelector('#amber-index-heading');
+      expect(previews.textContent).toContain(messages.beachIndexNote);
       if (regionalAvailable) {
         expect(regionalHeading?.textContent).toBe(messages.regionalIndex);
       } else {
         expect(regionalHeading).toBeNull();
-        expect(harness.routeNativeElement!.querySelector('#outlook-heading')).toBeNull();
+        expect(homePage.querySelector('#outlook-heading')).toBeNull();
+        const regionalStatus = homePage.querySelector('section[aria-labelledby="home-heading"] [role="status"]');
+        expect(regionalStatus?.textContent).toContain(messages.unavailableHome);
+        expect(regionalStatus?.textContent).toContain(messages.unavailableHomeNote);
         expect(home.get('Sobieszewo')!.textContent).not.toContain(messages.window);
       }
 
@@ -246,6 +252,7 @@ describe('Explore Map', () => {
           for (const text of expected) expect(surface.textContent).toContain(text);
           const timestamp = surface.querySelector('time');
           if (capturedAt && localTime) {
+            expect(surface.querySelector('dt')?.textContent).toBe(messages.index);
             expect(timestamp?.getAttribute('datetime')).toBe(capturedAt);
             expect(timestamp?.textContent).toContain(localTime);
           } else {

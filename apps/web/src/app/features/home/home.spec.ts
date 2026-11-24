@@ -103,17 +103,20 @@ describe('Home forecast', () => {
   });
 
   it.each([
-    ['loading', 'Loading sample forecast'],
-    ['unavailable', 'Sample forecast unavailable'],
-    ['empty', 'No sample forecast'],
+    ['loading', 'Loading sample regional forecast'],
+    ['unavailable', 'Sample regional forecast unavailable'],
+    ['empty', 'No sample regional forecast'],
   ] as const)('presents %s accessibly without hiding the beach forecasts', async (state, label) => {
     const host = await render({ regional: { safety: 'unknown', forecast: { availability: 'unavailable', reason: state } } });
     expect(host.querySelector('[role="status"]')?.textContent).toContain(label);
     expect(host.querySelector('aside')?.textContent).toContain('Safety unknown');
     expect(host.querySelector('[role="img"], #outlook-heading')).toBeNull();
     const previews = host.querySelector('section[aria-labelledby="previews-heading"]');
-    expect(previews?.textContent).toContain('Sobieszewo');
-    expect(previews?.textContent).toContain('68 / 100');
+    const sobieszewo = previews?.querySelector('li');
+    expect(sobieszewo?.querySelector('h3')?.textContent).toBe('Sobieszewo');
+    expect(sobieszewo?.querySelector('dt')?.textContent).toBe('Experimental Amber Index');
+    expect(sobieszewo?.querySelector('dd')?.textContent).toBe('68 / 100');
+    expect(previews?.textContent).toContain('It does not estimate your chance of finding amber.');
     expect(previews?.textContent).toContain('Restricted access in this scenario');
     expect(previews?.textContent).not.toContain('Sample favorable window');
   });

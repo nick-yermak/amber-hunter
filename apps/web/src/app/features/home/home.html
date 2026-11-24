@@ -102,6 +102,7 @@
   <section aria-labelledby="previews-heading">
     <h2 id="previews-heading" class="text-2xl font-semibold tracking-tight">{{ i18n.text('beachPreviews') }}</h2>
     <p class="mt-1 text-sm text-muted">{{ i18n.text('previewsNote') }}</p>
+    <p class="mt-1 text-sm text-muted">{{ i18n.text('beachIndexNote') }}</p>
     <ul class="mt-4 grid gap-3 md:grid-cols-3">
       @for (beach of beaches; track beach.id) {
         <li class="rounded-card border border-divider bg-surface p-4 sm:p-5">
@@ -110,7 +111,7 @@
           @if (beach.forecast; as sample) {
             <dl class="mt-2 grid gap-1 text-sm">
               <div>
-                <dt class="inline font-semibold">{{ i18n.text('indexShort') }}</dt>{{ ' ' }}
+                <dt class="inline font-semibold">{{ i18n.text('index') }}</dt>{{ ' ' }}
                 <dd class="inline">{{ i18n.number(sample.index) }} / 100</dd>
               </div>
               <div>
