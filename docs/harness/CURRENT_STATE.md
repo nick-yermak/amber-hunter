@@ -10,9 +10,9 @@ Apply the [Issue workflow](OPERATING_MODEL.md#issue-workflow) and [Permission Ma
 
 Only the Human Owner merges. Record post-merge [synchronization](OPERATING_MODEL.md#post-merge-synchronization) and remote head verification separately. Optional [housekeeping](OPERATING_MODEL.md#post-merge-cleanup) can be deferred. Reviewer remote-write isolation and Codex Desktop activation of Angular CLI MCP remain unverified.
 
-## Proposed next work
+## Next work
 
-- **Product:** AH-020 Weather & Marine Data Feasibility is the next proposed research task. Carry forward the unresolved data-source and forecast questions in [Project State](../baseline/PROJECT_STATE.md#outstanding-decisions-and-research).
+- **Product:** [Issue #47](https://github.com/nick-yermak/amber-hunter/issues/47) tracks the AH-020 documentation closeout. The [feasibility assessment](../forecast/AH-020_FEASIBILITY_ASSESSMENT.md) records a Conditional GO for the approved [Forecast Data Foundation Epic](../forecast/FORECAST_DATA_FOUNDATION_EPIC.md). Source Data Contracts & Validation Fixtures is the next product task after closeout, subject to separate Issue approval and verified Ready status.
 - **Harness:** Agent Evals is planned as a separate improvement. Design and implementation require separately scoped Owner approval.
 
 Start the next task in a fresh, focused conversation with the verified remote `main` SHA, relevant approved decisions, remaining risks, and the next objective.
