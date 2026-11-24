@@ -25,7 +25,7 @@ export const en = {
   staleHome: "Stale sample forecast. Favorable windows are hidden until a current sample is available.",
   index: "Experimental Amber Index",
   indexAria: "Experimental regional Amber Index: {index} out of 100, sample data",
-  regionalIndex: "Regional Amber Index",
+  regionalIndex: "Experimental Regional Amber Index",
   indexHome: "An illustrative score for conditions. It does not measure the chance of finding amber.",
   confidenceHome: "Sample data confidence",
   confidenceNote: "describes the sample inputs",

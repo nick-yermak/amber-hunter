@@ -192,16 +192,39 @@ describe('Explore Map', () => {
     expect(host.querySelector('.beach-map-marker')).toBeNull();
   });
 
-  it.each([['en', en], ['pl', pl], ['ru', ru]] as const)(
-    'presents the same current, stale and missing beach scenarios across routes in %s',
-    async (language, messages) => {
+  it.each(
+    ([['en', en], ['pl', pl], ['ru', ru]] as const).flatMap(([language, messages]) => [
+      [language, true, messages] as const,
+      [language, false, messages] as const,
+    ]),
+  )(
+    'presents the same beach scenarios across routes in %s (regional forecast available: %s)',
+    async (language, regionalAvailable, messages) => {
+      if (!regionalAvailable) {
+        TestBed.overrideProvider(DEMO_FORECASTS, {
+          useValue: {
+            ...demoForecasts,
+            regional: {
+              ...demoForecasts.regional,
+              forecast: { availability: 'unavailable', reason: 'unavailable' },
+            },
+          },
+        });
+      }
       TestBed.inject(Localization).select(language);
       const harness = await RouterTestingHarness.create('/');
       const home = new Map<string, Element>(Array.from(
         harness.routeNativeElement!.querySelectorAll('#previews-heading ~ ul > li'),
         (card) => [card.querySelector('h3')!.textContent!.trim(), card],
       ));
-      expect(harness.routeNativeElement!.textContent).toContain(messages.regionalIndex);
+      const regionalHeading = harness.routeNativeElement!.querySelector('#amber-index-heading');
+      if (regionalAvailable) {
+        expect(regionalHeading?.textContent).toBe(messages.regionalIndex);
+      } else {
+        expect(regionalHeading).toBeNull();
+        expect(harness.routeNativeElement!.querySelector('#outlook-heading')).toBeNull();
+        expect(home.get('Sobieszewo')!.textContent).not.toContain(messages.window);
+      }
 
       const cases = [
         ['sobieszewo', 'Sobieszewo', ['68 / 100', messages.medium, messages.currentScenario, messages.clearScenario], '2030-10-07T04:00:00Z', '06:00'],

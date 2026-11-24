@@ -27,7 +27,7 @@ export const pl = {
   staleHome: "Przykładowa prognoza jest nieaktualna. Korzystne przedziały są ukryte do czasu udostępnienia aktualnego przykładu.",
   index: "Eksperymentalny indeks bursztynowy",
   indexAria: "Eksperymentalny regionalny indeks bursztynowy: {index} na 100, dane przykładowe",
-  regionalIndex: "Regionalny indeks bursztynowy",
+  regionalIndex: "Eksperymentalny regionalny indeks bursztynowy",
   indexHome: "Przykładowa ocena warunków. Nie określa szansy na znalezienie bursztynu.",
   confidenceHome: "Wiarygodność danych przykładowych",
   confidenceNote: "dotyczy danych wejściowych w przykładzie",

@@ -32,6 +32,7 @@ describe('Home forecast', () => {
     const host = await render();
     expect(host.querySelector('[role="img"]')?.getAttribute('aria-label'))
       .toBe('Experimental regional Amber Index: 71 out of 100, sample data');
+    expect(host.querySelector('#amber-index-heading')?.textContent).toBe('Experimental Regional Amber Index');
     expect(host.textContent).toContain('does not measure the chance of finding amber');
     expect(host.textContent).toContain('Waves are easing');
     expect(host.textContent).toContain('Medium · describes the sample inputs');
@@ -105,11 +106,16 @@ describe('Home forecast', () => {
     ['loading', 'Loading sample forecast'],
     ['unavailable', 'Sample forecast unavailable'],
     ['empty', 'No sample forecast'],
-  ] as const)('presents %s accessibly with unknown safety and no index', async (state, label) => {
+  ] as const)('presents %s accessibly without hiding the beach forecasts', async (state, label) => {
     const host = await render({ regional: { safety: 'unknown', forecast: { availability: 'unavailable', reason: state } } });
     expect(host.querySelector('[role="status"]')?.textContent).toContain(label);
     expect(host.querySelector('aside')?.textContent).toContain('Safety unknown');
-    expect(host.querySelector('[role="img"], #previews-heading, #outlook-heading')).toBeNull();
+    expect(host.querySelector('[role="img"], #outlook-heading')).toBeNull();
+    const previews = host.querySelector('section[aria-labelledby="previews-heading"]');
+    expect(previews?.textContent).toContain('Sobieszewo');
+    expect(previews?.textContent).toContain('68 / 100');
+    expect(previews?.textContent).toContain('Restricted access in this scenario');
+    expect(previews?.textContent).not.toContain('Sample favorable window');
   });
 
   it('describes an empty outlook', async () => {
