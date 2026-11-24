@@ -4,9 +4,10 @@ import { ActivatedRoute, provideRouter, UrlSegment } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { en } from '../../core/localization/en';
 import { routes } from '../../app.routes';
-import { BEACH_DETAILS_SAMPLE_FORECASTS, BeachDetails } from './beach-details';
-import { pilotBeaches } from './pilot-beaches';
-import { sampleBeachForecasts, sampleSafetyLabels } from './sample-beach-forecasts';
+import { BeachDetails } from './beach-details';
+import { pilotBeaches } from '../../shared/beaches/pilot-beaches';
+import { sampleSafetyLabels } from '../../core/localization/forecast-labels';
+import { DEMO_FORECASTS, demoForecasts } from '../../shared/forecast/demo-forecasts';
 
 describe('Beach Details', () => {
   beforeEach(() => TestBed.configureTestingModule({ providers: [provideRouter(routes)] }));
@@ -52,8 +53,14 @@ describe('Beach Details', () => {
     TestBed.overrideProvider(ActivatedRoute, {
       useValue: { url: of([new UrlSegment('beaches', {}), new UrlSegment('sobieszewo', {})]) },
     });
-    TestBed.overrideProvider(BEACH_DETAILS_SAMPLE_FORECASTS, {
-      useValue: { sobieszewo: { ...sampleBeachForecasts['sobieszewo']!, index: 100, safety } },
+    TestBed.overrideProvider(DEMO_FORECASTS, {
+      useValue: {
+        ...demoForecasts,
+        beaches: {
+          ...demoForecasts.beaches,
+          sobieszewo: { safety, forecast: { ...demoForecasts.beaches.sobieszewo.forecast, index: 100 } },
+        },
+      },
     });
     const fixture = TestBed.createComponent(BeachDetails);
     fixture.detectChanges();

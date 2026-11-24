@@ -10,15 +10,15 @@ export const languagePreferenceKey = 'amber-hunter-language';
 
 const messages: Record<Language, Messages> = { en, pl, ru };
 const locales: Record<Language, string> = { en: 'en-GB', pl: 'pl-PL', ru: 'ru-RU' };
+const coastalTimeZone = 'Europe/Warsaw';
 const dateOptions = {
   full: { dateStyle: 'full', timeZone: 'UTC' },
   outlook: { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' },
   warsaw: {
     day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
-    timeZone: 'Europe/Warsaw', timeZoneName: 'short',
+    timeZone: coastalTimeZone, timeZoneName: 'short',
   },
   utc: { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' },
-  localTime: { timeStyle: 'short', timeZone: 'UTC' },
 } satisfies Record<string, Intl.DateTimeFormatOptions>;
 
 export function isLanguage(value: unknown): value is Language {
@@ -89,9 +89,19 @@ export class Localization {
     return new Intl.DateTimeFormat(locales[this.language()], dateOptions[format]).format(new Date(value));
   }
 
-  timeWindow(start: string, end: string, zone: string): string {
-    const clock = (time: string) => this.date(`2000-01-01T${time}:00Z`, 'localTime');
-    return `${clock(start)}–${clock(end)} ${zone}`;
+  timeWindow(start: string, end: string): string {
+    const formatter = new Intl.DateTimeFormat(locales[this.language()], {
+      hour: '2-digit', minute: '2-digit', timeZone: coastalTimeZone, timeZoneName: 'short',
+    });
+    const startTime = new Date(start);
+    const endTime = new Date(end);
+    const zone = (instant: Date) =>
+      formatter.formatToParts(instant).find((part) => part.type === 'timeZoneName')?.value;
+
+    // A range formatter can collapse repeated wall-clock times across the DST change.
+    return zone(startTime) === zone(endTime)
+      ? formatter.formatRange(startTime, endTime)
+      : `${formatter.format(startTime)}–${formatter.format(endTime)}`;
   }
 }
 

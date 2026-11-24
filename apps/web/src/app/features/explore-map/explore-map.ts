@@ -1,3 +1,4 @@
+import { sampleSafetyLabels } from '../../core/localization/forecast-labels';
 import { Localization } from '../../core/localization/localization';
 import {
   afterNextRender, Component, computed, DestroyRef, ElementRef, inject, InjectionToken, viewChild,
@@ -5,14 +6,12 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BeachMap } from './beach-map';
-import { pilotBeaches } from '../beaches/pilot-beaches';
-import { sampleBeachForecasts, sampleSafetyLabels } from '../beaches/sample-beach-forecasts';
+import { BeachId, pilotBeaches } from '../../shared/beaches/pilot-beaches';
+import { DEMO_FORECASTS } from '../../shared/forecast/demo-forecasts';
+import { beachScenario, displayableForecast } from '../../shared/forecast/forecast';
 
-export const EXPLORE_MAP_FIXTURES = new InjectionToken<{
-  readonly beaches: typeof pilotBeaches;
-  readonly forecasts: typeof sampleBeachForecasts;
-}>('Explore Map fixtures', {
-  factory: () => ({ beaches: pilotBeaches, forecasts: sampleBeachForecasts }),
+export const EXPLORE_MAP_BEACHES = new InjectionToken<typeof pilotBeaches>('Explore Map beaches', {
+  factory: () => pilotBeaches,
 });
 
 @Component({
@@ -23,8 +22,8 @@ export const EXPLORE_MAP_FIXTURES = new InjectionToken<{
 })
 export class ExploreMap {
   protected readonly i18n = inject(Localization);
-  private readonly fixtures = inject(EXPLORE_MAP_FIXTURES);
-  protected readonly beaches = this.fixtures.beaches;
+  private readonly dataset = inject(DEMO_FORECASTS);
+  protected readonly beaches = inject(EXPLORE_MAP_BEACHES);
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -33,17 +32,22 @@ export class ExploreMap {
   protected readonly selectedBeach = computed(() =>
     this.beaches.find((beach) => beach.id === this.selectedId()),
   );
-  protected readonly forecast = computed(() => {
+  private readonly scenario = computed(() => {
     const beach = this.selectedBeach();
-    return beach && this.fixtures.forecasts[beach.id];
+    return beach && beachScenario(this.dataset, beach.id);
   });
+  protected readonly forecast = computed(() => {
+    const scenario = this.scenario();
+    return scenario && displayableForecast(scenario);
+  });
+  protected readonly safety = computed(() => this.scenario()?.safety ?? 'unknown');
   protected readonly safetyLabels = sampleSafetyLabels;
 
   private readonly intro = viewChild.required<ElementRef<HTMLElement>>('intro');
   private readonly mapHost = viewChild.required('mapHost', { read: ElementRef<HTMLElement> });
   private readonly destroyRef = inject(DestroyRef);
 
-  protected selectBeach(id: string): void {
+  protected selectBeach(id: BeachId): void {
     if (id === this.selectedId() || !this.beaches.some((beach) => beach.id === id)) return;
 
     void this.router.navigate([], {

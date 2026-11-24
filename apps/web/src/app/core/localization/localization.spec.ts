@@ -68,6 +68,17 @@ describe('Localization', () => {
     expect(i18n.date('2030-10-07T04:00:00Z', 'warsaw')).toContain('06:00');
   });
 
+  it.each(['en', 'pl', 'ru'] as const)('formats coastal windows across both Warsaw DST changes in %s', (language) => {
+    const i18n = TestBed.inject(Localization);
+    i18n.select(language);
+
+    const spring = i18n.timeWindow('2030-03-31T00:30:00Z', '2030-03-31T01:30:00Z');
+    expect(spring).toMatch(/01:30.*03:30/u);
+    const autumn = i18n.timeWindow('2030-10-27T02:30:00+02:00', '2030-10-27T02:30:00+01:00');
+    expect(autumn).toMatch(/02:30.+–02:30.+/u);
+    expect(autumn.split('–')[0]).not.toBe(autumn.split('–')[1]);
+  });
+
   it.each([pl, ru])('preserves all template placeholders in every nonempty translation', (dictionary) => {
     const placeholders = (message: string) => (message.match(/\{\w+\}/g) ?? []).sort();
     for (const key of Object.keys(en) as (keyof typeof en)[]) {

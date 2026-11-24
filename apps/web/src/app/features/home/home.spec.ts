@@ -3,27 +3,27 @@ import { provideRouter } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { appConfig } from '../../app.config';
 import { Home } from './home';
-import { Forecast, sampleForecast } from './sample-forecast';
+import { DEMO_FORECASTS, demoForecasts } from '../../shared/forecast/demo-forecasts';
+import type { DemoForecastDataset } from '../../shared/forecast/forecast';
+
+const { regional, beaches } = demoForecasts;
 
 describe('Home route', () => {
   it.each(['/', '/?extra=kept', '/?forecast=unexpected'])('renders the sample forecast at %s', async (url) => {
     TestBed.configureTestingModule({ providers: appConfig.providers });
     const harness = await RouterTestingHarness.create(url);
-    const home: Home = harness.routeDebugElement!.componentInstance;
-
-    expect(home.forecast()).toBeUndefined();
     expect(harness.routeNativeElement?.querySelector('[role="img"]')?.getAttribute('aria-label'))
-      .toBe('Experimental Amber Index: 71 out of 100, sample data');
+      .toBe('Experimental regional Amber Index: 71 out of 100, sample data');
   });
 });
 
 describe('Home forecast', () => {
-  async function render(forecast?: Forecast) {
-    TestBed.configureTestingModule({ imports: [Home], providers: [provideRouter([])] });
+  async function render(overrides: Partial<DemoForecastDataset> = {}) {
+    TestBed.configureTestingModule({
+      imports: [Home],
+      providers: [provideRouter([]), { provide: DEMO_FORECASTS, useValue: { ...demoForecasts, ...overrides } }],
+    });
     const fixture = TestBed.createComponent(Home);
-    if (forecast) {
-      fixture.componentRef.setInput('forecast', forecast);
-    }
     await fixture.whenStable();
     return fixture.nativeElement as HTMLElement;
   }
@@ -31,7 +31,8 @@ describe('Home forecast', () => {
   it('labels the sample index, its explanation, confidence and freshness independently', async () => {
     const host = await render();
     expect(host.querySelector('[role="img"]')?.getAttribute('aria-label'))
-      .toBe('Experimental Amber Index: 71 out of 100, sample data');
+      .toBe('Experimental regional Amber Index: 71 out of 100, sample data');
+    expect(host.querySelector('#amber-index-heading')?.textContent).toBe('Experimental Regional Amber Index');
     expect(host.textContent).toContain('does not measure the chance of finding amber');
     expect(host.textContent).toContain('Waves are easing');
     expect(host.textContent).toContain('Medium · describes the sample inputs');
@@ -58,7 +59,7 @@ describe('Home forecast', () => {
     ['restricted', 'Access restricted'],
     ['unknown', 'Safety unknown'],
   ] as const)('hides all windows when overall safety is %s, even with a high index', async (safety, label) => {
-    const host = await render({ ...sampleForecast, index: 99, safety });
+    const host = await render({ regional: { safety, forecast: { ...regional.forecast, index: 99 } } });
     expect(host.querySelector('aside')?.textContent).toContain(label);
     expect(host.textContent).not.toContain('07:00–10:00');
     expect(host.querySelectorAll('section ul a')).toHaveLength(0);
@@ -69,7 +70,7 @@ describe('Home forecast', () => {
     ['restricted', 'Access restricted'],
     ['unknown', 'Safety unknown'],
   ] as const)('presents one labeled %s warning before the Amber Index', async (safety, label) => {
-    const host = await render({ ...sampleForecast, safety });
+    const host = await render({ regional: { ...regional, safety } });
     const warning = host.querySelector('aside[aria-labelledby="safety-warning-heading"]');
     const index = host.querySelector('[role="img"]');
 
@@ -83,8 +84,10 @@ describe('Home forecast', () => {
 
   it('hides a time window for an unsafe beach even when overall safety has no restriction', async () => {
     const host = await render({
-      ...sampleForecast,
-      beaches: [{ ...sampleForecast.beaches[0], safety: 'unsafe' }],
+      beaches: {
+        ...beaches,
+        sobieszewo: { safety: 'unsafe', forecast: { ...beaches.sobieszewo.forecast, index: 100 } },
+      },
     });
     expect(host.textContent).toContain('Unsafe conditions');
     expect(host.textContent).toContain('Favorable window withheld');
@@ -92,7 +95,7 @@ describe('Home forecast', () => {
   });
 
   it('identifies stale data and withholds windows while retaining the timestamp', async () => {
-    const host = await render({ ...sampleForecast, state: 'stale' });
+    const host = await render({ regional: { ...regional, forecast: { ...regional.forecast, freshness: 'staleScenario' } } });
     expect(host.querySelector('[role="status"]')?.textContent).toContain('Stale sample forecast');
     expect(host.textContent).toContain('outside the sample update window');
     expect(host.querySelector('time[datetime="2030-10-07T06:00:00+02:00"]')).not.toBeNull();
@@ -100,19 +103,26 @@ describe('Home forecast', () => {
   });
 
   it.each([
-    ['loading', 'Loading sample forecast'],
-    ['unavailable', 'Sample forecast unavailable'],
-    ['empty', 'No sample forecast'],
-  ] as const)('presents %s accessibly with unknown safety and no index', async (state, label) => {
-    const host = await render({ state });
+    ['loading', 'Loading sample regional forecast'],
+    ['unavailable', 'Sample regional forecast unavailable'],
+    ['empty', 'No sample regional forecast'],
+  ] as const)('presents %s accessibly without hiding the beach forecasts', async (state, label) => {
+    const host = await render({ regional: { safety: 'unknown', forecast: { availability: 'unavailable', reason: state } } });
     expect(host.querySelector('[role="status"]')?.textContent).toContain(label);
     expect(host.querySelector('aside')?.textContent).toContain('Safety unknown');
-    expect(host.querySelector('[role="img"], #previews-heading, #outlook-heading')).toBeNull();
+    expect(host.querySelector('[role="img"], #outlook-heading')).toBeNull();
+    const previews = host.querySelector('section[aria-labelledby="previews-heading"]');
+    const sobieszewo = previews?.querySelector('li');
+    expect(sobieszewo?.querySelector('h3')?.textContent).toBe('Sobieszewo');
+    expect(sobieszewo?.querySelector('dt')?.textContent).toBe('Experimental Amber Index');
+    expect(sobieszewo?.querySelector('dd')?.textContent).toBe('68 / 100');
+    expect(previews?.textContent).toContain('It does not estimate your chance of finding amber.');
+    expect(previews?.textContent).toContain('Restricted access in this scenario');
+    expect(previews?.textContent).not.toContain('Sample favorable window');
   });
 
-  it('describes empty preview and outlook lists', async () => {
-    const host = await render({ ...sampleForecast, beaches: [], outlook: [] });
-    expect(host.textContent).toContain('No sample beach previews available.');
+  it('describes an empty outlook', async () => {
+    const host = await render({ regional: { ...regional, forecast: { ...regional.forecast, outlook: [] } } });
     expect(host.textContent).toContain('No sample outlook available.');
   });
 });
