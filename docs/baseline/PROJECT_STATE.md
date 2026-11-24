@@ -1,10 +1,10 @@
 # Amber Hunter — Project State
 
-**Version:** 1.5
+**Version:** 1.6
 
-**Updated:** 2026-11-22
+**Updated:** 2026-11-24
 
-**Status:** Product work through AH-014 is merged. AH-015 is the current Harness change.
+**Status:** Implementation through AH-019 is merged. AH-020 Weather & Marine Data Feasibility is the next proposed product research task.
 
 ## Project mission
 Build a polished, public, free-to-use portfolio and learning application for finding favorable amber-hunting conditions on Poland's Baltic coast. Demonstrate Angular, geospatial engineering, data processing, explainable forecasts, quality engineering, and a pragmatic Codex-based AI development harness. Commercial competition and monetization are not primary objectives.
@@ -23,7 +23,7 @@ Build a polished, public, free-to-use portfolio and learning application for fin
 | Repo | pnpm workspaces monorepo; **no Nx** |
 | Development | Codex Desktop on macOS, local-first |
 | Delivery | GitHub Projects/Issues/milestones/PR, GitHub Actions, owner-controlled merge |
-| Harness | Balanced: main implementation agent + independent read-only reviewer, curated skills and MCP; risk-based permissions |
+| Harness | [Controlled Autonomy v1.1](../harness/OPERATING_MODEL.md#issue-workflow), with a Main agent, an independent Restricted Local Reviewer, and exclusive Human Owner merge authority |
 | Budget | Target approximately 0 PLN/month (verify current free tiers/limits) |
 | Design | Baltic Explorer; approved reference images in `docs/design/references/` |
 | Authentication | Anonymous MVP; authentication/community later |
@@ -31,9 +31,25 @@ Build a polished, public, free-to-use portfolio and learning application for fin
 | Forecast | Experimental Amber Index 0–100; Open-Meteo primary, Copernicus research; 72h conditions; three-hour refresh checks; independent safety checks |
 | Content | Amber Academy static articles for MVP; CMS later |
 
+## Verified remote baseline
+
+At the start of [Issue #45](https://github.com/nick-yermak/amber-hunter/issues/45) on 2026-11-24, GitHub reported `8cfa7ebad92b3023c341e3c3748a3b788c701040` as the tip of remote `main`. GitHub confirmed that each Issue below was closed as Completed and each PR was merged into `main`.
+
+| Task | Closed Issue | Merged PR | Delivered |
+|---|---|---|---|
+| AH-015 | [#35](https://github.com/nick-yermak/amber-hunter/issues/35) | [#36](https://github.com/nick-yermak/amber-hunter/pull/36) | Controlled Autonomy v1.1, including exact-diff Reviewer handoff and safeguarded post-merge synchronization |
+| AH-016 | [#37](https://github.com/nick-yermak/amber-hunter/issues/37) | [#38](https://github.com/nick-yermak/amber-hunter/pull/38) | Disabled automatic query-parameter input binding and documented the Angular routing convention |
+| AH-017 | [#39](https://github.com/nick-yermak/amber-hunter/issues/39) | [#40](https://github.com/nick-yermak/amber-hunter/pull/40) | Amber Academy static content and article reader foundation |
+| AH-018 | [#41](https://github.com/nick-yermak/amber-hunter/issues/41) | [#42](https://github.com/nick-yermak/amber-hunter/pull/42) | Runtime localization foundation for PL, EN, and RU |
+| AH-019 | [#43](https://github.com/nick-yermak/amber-hunter/issues/43) | [#44](https://github.com/nick-yermak/amber-hunter/pull/44) | Shared frontend forecast contracts and demo fixtures for Home, Explore Map, and Beach Details |
+
+The initial local inspection found a clean primary checkout and matching local `main` and cached `origin/main`. Those are observations of this checkout. Any owner-reported state from another checkout is local context and requires its own verification.
+
+GitHub reported the remote head refs for PRs #36, #38, #40, #42, and #44 absent on 2026-11-24.
+
 ## Verified state on 2026-11-22
 
-- The [repository](https://github.com/nick-yermak/amber-hunter) is public and its default branch is `main`. The AH-015 baseline audit verified local `main`, cached `origin/main` and live remote `main` at `5cce4053cca64a9720515ba82d17a6c3dd7970c5`. The primary checkout was clean and was the only registered worktree.
+- The [repository](https://github.com/nick-yermak/amber-hunter) is public and its default branch is `main`. The AH-015 baseline audit verified local `main`, cached `origin/main` and live remote `main` at `5cce4053cca64a9720515ba82d17a6c3dd7970c5`. The primary checkout was clean and was the only registered worktree. No synchronization was needed.
 - [AH-001](https://github.com/nick-yermak/amber-hunter/issues/1) completed the Issue-to-PR workflow dry run.
 - [AH-002](https://github.com/nick-yermak/amber-hunter/issues/3) completed the Reviewer verification for MVP. The owner approved the [Restricted Local Reviewer](../harness/REVIEWER.md) for read-only local review. Remote-write isolation remains unproven. Authenticated GitHub operations are outside the Reviewer workflow.
 - [AH-003](https://github.com/nick-yermak/amber-hunter/issues/6) is closed and Done. [PR #7](https://github.com/nick-yermak/amber-hunter/pull/7) was squash-merged as `8fe731e4969a2a8a1d79494fce2508a202633741`. The minimal workspace pins Node.js 24.22.3 and pnpm 10.34.9. The [Workspace install check](https://github.com/nick-yermak/amber-hunter/actions/runs/43157400197) passed on that PR. See the [CI bootstrap guide](../harness/CI_CD.md).
@@ -46,7 +62,7 @@ Build a polished, public, free-to-use portfolio and learning application for fin
 - [AH-011](https://github.com/nick-yermak/amber-hunter/issues/25) closed after [PR #26](https://github.com/nick-yermak/amber-hunter/pull/26) merged the Home / Forecast UI foundation with sample data.
 - [AH-012](https://github.com/nick-yermak/amber-hunter/issues/27) is closed and verified Done in Project #3. [PR #28](https://github.com/nick-yermak/amber-hunter/pull/28) merged the documented [post-merge cleanup procedure](../harness/OPERATING_MODEL.md#post-merge-cleanup). The local AH-012 branch was retained at the AH-015 baseline audit.
 - [AH-013](https://github.com/nick-yermak/amber-hunter/pull/32) delivered Explore Map UI. [AH-014](https://github.com/nick-yermak/amber-hunter/issues/33) closed as Completed after [PR #34](https://github.com/nick-yermak/amber-hunter/pull/34) merged Beach Details. The final reviewed head was `c8a59eb85a4f4a41a38676df4008b43c59eb72aa`. The AH-014 branch remained locally and on GitHub at the baseline audit.
-- GitHub automatic head branch deletion was enabled and verified before AH-015. Actual deletion on a subsequent merge remains to be verified.
+- GitHub automatic head branch deletion was enabled and verified before AH-015.
 - Forecast research is at specification v0.1 and awaits scientific validation. The Baltic Explorer reference images are conceptual design guides.
 
 ## Important constraints
@@ -69,7 +85,7 @@ Build a polished, public, free-to-use portfolio and learning application for fin
 
 ## Next product objective
 
-See [Current Operational State](../harness/CURRENT_STATE.md) for the next task handoff.
+AH-020 Weather & Marine Data Feasibility is the next proposed product research task. See [Current Operational State](../harness/CURRENT_STATE.md) for the next task handoff.
 
 ## Documentation rules
 

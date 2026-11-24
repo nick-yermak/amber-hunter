@@ -1,7 +1,18 @@
 # Amber Hunter — Current Operational State
 
-See [Project State](../baseline/PROJECT_STATE.md#verified-state-on-2026-11-22) for the verified baseline through AH-014. [AH-015](https://github.com/nick-yermak/amber-hunter/issues/35) covers the Harness update. The separate AH-016 proposal covers the Home route-binding risk.
+## Baseline through AH-019
 
-After completing a task, start the next task in a fresh, task-focused ChatGPT or Codex conversation. Carry forward a short handoff with the current verified remote `main` SHA, approved decisions relevant to the next task, outstanding risks, and the next objective.
+At the start of [Issue #45](https://github.com/nick-yermak/amber-hunter/issues/45) on 2026-11-24, GitHub reported remote `main` at `8cfa7ebad92b3023c341e3c3748a3b788c701040`. See [Project State](../baseline/PROJECT_STATE.md#verified-remote-baseline) for closed Issues, merged PRs, and the separately observed local checkout. Treat owner-reported local state as handoff context and verify the target checkout before synchronization or cleanup.
 
-The AH-015 baseline required no synchronization. Retained AH-012 and AH-014 branches are optional [housekeeping](OPERATING_MODEL.md#post-merge-cleanup). After the AH-015 human merge, verify automatic remote head deletion separately and record what remains. Assess operational friction on AH-016 after it is approved.
+## Controlled Autonomy v1.1
+
+Apply the [Issue workflow](OPERATING_MODEL.md#issue-workflow) and [Permission Matrix](PERMISSIONS.md). Owner scope approval and verified Project membership, `Ready` status, Priority, Area, and milestone precede implementation. Main runs the required checks and prepares a linked PR. The Human Owner launches the separate read-only Reviewer and returns the verdict for the exact PR base and head. Main may address in-scope findings within the two fix-and-review cycles. Further review cycles require the [Owner Exception Protocol](OPERATING_MODEL.md#owner-exception-protocol).
+
+Only the Human Owner merges. Record post-merge [synchronization](OPERATING_MODEL.md#post-merge-synchronization) and remote head verification separately. Optional [housekeeping](OPERATING_MODEL.md#post-merge-cleanup) can be deferred. Reviewer remote-write isolation and Codex Desktop activation of Angular CLI MCP remain unverified.
+
+## Proposed next work
+
+- **Product:** AH-020 Weather & Marine Data Feasibility is the next proposed research task. Carry forward the unresolved data-source and forecast questions in [Project State](../baseline/PROJECT_STATE.md#outstanding-decisions-and-research).
+- **Harness:** Agent Evals is planned as a separate improvement. Design and implementation require separately scoped Owner approval.
+
+Start the next task in a fresh, focused conversation with the verified remote `main` SHA, relevant approved decisions, remaining risks, and the next objective.
