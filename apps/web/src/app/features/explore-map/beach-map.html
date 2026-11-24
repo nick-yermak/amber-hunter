@@ -1,16 +1,16 @@
 <div class="relative isolate overflow-hidden rounded-card bg-surface-cool">
-  <div #canvas role="region" aria-label="Interactive map of pilot beaches near Gdańsk"
+  <div #canvas role="region" [attr.aria-label]="i18n.text('mapAria')"
        class="map-canvas w-full"></div>
 
   @if (state() === 'loading') {
     <p role="status" class="pointer-events-none absolute start-3 top-3 max-w-[70%] rounded-control bg-surface px-3 py-2 text-sm">
-      Loading the coastal map…
+      {{ i18n.text('mapLoading') }}
     </p>
   } @else if (state() === 'error') {
     <div class="absolute start-3 top-3 max-w-[70%] rounded-control bg-surface p-3 text-sm shadow-sm">
-      <p role="status">The coastal map could not load. You can still select a beach from the list.</p>
+      <p role="status">{{ i18n.text('mapError') }}</p>
       <button type="button" class="mt-1 min-h-11 rounded-control px-2 font-semibold text-action-strong underline"
-              (click)="start()">Retry map</button>
+              (click)="start()">{{ i18n.text('mapRetry') }}</button>
     </div>
   }
 </div>

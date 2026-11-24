@@ -1,3 +1,4 @@
+import { Localization } from '../../core/localization/localization';
 import {
   afterNextRender, Component, DestroyRef, effect, ElementRef, inject, input, output,
   signal, viewChild,
@@ -12,6 +13,7 @@ import { Beach } from '../beaches/pilot-beaches';
   styleUrl: './beach-map.css',
 })
 export class BeachMap {
+  protected readonly i18n = inject(Localization);
   readonly beaches = input.required<readonly Beach[]>();
   readonly selectedId = input.required<string | null>();
   readonly beachSelected = output<string>();
@@ -52,6 +54,26 @@ export class BeachMap {
     });
 
     effect(() => this.updateMarkers(this.selectedId()));
+
+    effect(() => {
+      if (!this.map()) return;
+
+      const container = this.container().nativeElement;
+      container.querySelector('canvas')?.setAttribute('aria-label', this.i18n.text('map'));
+      // MapLibre applies its locale when creating controls. Relabel the existing
+      // controls so that switching language preserves focus, camera and markers.
+      const controls = [
+        ['.maplibregl-ctrl-zoom-in', this.i18n.text('zoomIn')],
+        ['.maplibregl-ctrl-zoom-out', this.i18n.text('zoomOut')],
+        ['.maplibregl-ctrl-attrib-button', this.i18n.text('attribution')],
+      ];
+      for (const [selector, label] of controls) {
+        const control = container.querySelector<HTMLElement>(selector);
+        if (!control) continue;
+        control.setAttribute('aria-label', label);
+        control.title = label;
+      }
+    });
   }
 
   protected start(): void {

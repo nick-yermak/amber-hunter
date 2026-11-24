@@ -6,6 +6,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { AcademyLibrary } from './features/academy/academy-library';
 import { App } from './app';
 import { appConfig } from './app.config';
+import { languagePreferenceKey } from './core/localization/localization';
 
 const academyArticles = [
   { id: 'amber', slug: 'amber', lang: 'en', title: 'Baltic amber', summary: 'About amber.',
@@ -15,6 +16,8 @@ const academyArticles = [
 ];
 
 describe('App shell', () => {
+  afterEach(() => localStorage.removeItem(languagePreferenceKey));
+
   function createShell() {
     TestBed.configureTestingModule({
       imports: [App],
@@ -91,6 +94,82 @@ describe('App shell', () => {
     await fixture.whenStable();
     expect(host.querySelector('main h1')?.textContent?.trim()).toBe('Article not found');
     expect(host.querySelector('main h1 + a')?.textContent?.trim()).toBe('Back to Amber Academy');
+  });
+
+  it('switches the whole shell without navigation and preserves map and reader history', async () => {
+    const { fixture, host, router } = createShell();
+    const mapUrl = '/map?beach=mikoszewo&source=overview#preview';
+    const articleUrl = '/academy/amber?source=map#sources';
+    await router.navigateByUrl(mapUrl);
+    await fixture.whenStable();
+
+    const selector = host.querySelector<HTMLButtonElement>('app-language-selector > button')!;
+    const selected = host.querySelector('aside [aria-pressed="true"]');
+    const choose = async (language: string) => {
+      selector.click();
+      await fixture.whenStable();
+      host.querySelector<HTMLButtonElement>(`#language-options button[lang="${language}"]`)!.click();
+      await fixture.whenStable();
+      expect(selector.getAttribute('aria-expanded')).toBe('false');
+    };
+
+    await choose('pl');
+    expect(selector.textContent).toContain('Język');
+    expect(document.documentElement.lang).toBe('pl');
+    expect(document.title).toBe('Mapa wybrzeża');
+    expect(host.querySelector('main h1')?.textContent).toBe('Mapa wybrzeża');
+    expect(host.querySelector('aside [aria-pressed="true"]')).toBe(selected);
+    expect(host.textContent).toContain('Ograniczony dostęp w tym scenariuszu');
+    expect(host.textContent).toContain('DANE PRZYKŁADOWE');
+    expect(router.url).toBe(mapUrl);
+
+    await router.navigateByUrl(articleUrl);
+    await fixture.whenStable();
+    const article = host.querySelector('main article');
+    await choose('ru');
+    expect(document.documentElement.lang).toBe('ru');
+    expect(document.title).toBe('Чтение статьи');
+    expect(host.textContent).toContain('Статьи пока доступны только на английском языке.');
+    expect(article?.getAttribute('lang')).toBe('en');
+    expect(article?.querySelector('h1 + a')?.getAttribute('lang')).toBe('ru');
+    expect(article?.querySelector('h1')?.textContent?.trim()).toBe('Baltic amber');
+    expect(host.querySelector('main article')).toBe(article);
+    expect(router.url).toBe(articleUrl);
+
+    router.setUpLocationChangeListener();
+    const navigation = firstValueFrom(router.events.pipe(filter((event) => event instanceof NavigationEnd)));
+    TestBed.inject(Location).back();
+    await navigation;
+    await fixture.whenStable();
+    expect(router.url).toBe(mapUrl);
+    expect(document.title).toBe('Карта побережья');
+    expect(host.querySelector('aside [aria-pressed="true"]')?.textContent).toContain('Mikoszewo');
+  });
+
+  it('keeps a language option clickable after Safari blurs the trigger without a focus destination', async () => {
+    const { fixture, host, router } = createShell();
+    const url = '/?source=safari#preview';
+    await router.navigateByUrl(url);
+    await fixture.whenStable();
+
+    const trigger = host.querySelector<HTMLButtonElement>('app-language-selector > button')!;
+    trigger.click();
+    await fixture.whenStable();
+
+    const option = host.querySelector<HTMLButtonElement>('#language-options button[lang="pl"]')!;
+    option.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true }));
+    trigger.dispatchEvent(new FocusEvent('focusout', { bubbles: true, relatedTarget: null }));
+    await fixture.whenStable();
+    expect(host.querySelector('#language-options button[lang="pl"]')).toBe(option);
+
+    option.click();
+    await fixture.whenStable();
+    expect(trigger.getAttribute('aria-expanded')).toBe('false');
+    expect(document.activeElement).toBe(trigger);
+    expect(document.documentElement.lang).toBe('pl');
+    expect(host.querySelector('main h1')?.textContent?.trim()).toBe('Prognoza dla wybrzeża');
+    expect(localStorage.getItem(languagePreferenceKey)).toBe('pl');
+    expect(router.url).toBe(url);
   });
 
   it('keeps beach identity and sample forecasts independent of query parameters', async () => {

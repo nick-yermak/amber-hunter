@@ -7,13 +7,20 @@ describe('Academy library', () => {
   };
 
   it('accepts the generated English article contract', () => {
-    expect(readAcademyLibrary([article])).toEqual([article]);
+    expect(readAcademyLibrary([article], 'en')).toEqual([article]);
+  });
+
+  it('validates every article against the requested collection language', () => {
+    const polishArticle = { ...article, lang: 'pl' };
+    expect(readAcademyLibrary([polishArticle], 'pl')).toEqual([polishArticle]);
+    expect(() => readAcademyLibrary([article], 'pl')).toThrow();
+    expect(() => readAcademyLibrary([polishArticle], 'en')).toThrow();
   });
 
   it('rejects missing, malformed and ambiguous entries', () => {
     for (const content of [
       null, [], [null], [{ ...article, slug: '../amber' }], [{ ...article, html: '' }],
       [article, { ...article, id: 'second' }], [article, { ...article, slug: 'second' }],
-    ]) expect(() => readAcademyLibrary(content)).toThrow();
+    ]) expect(() => readAcademyLibrary(content, 'en')).toThrow();
   });
 });

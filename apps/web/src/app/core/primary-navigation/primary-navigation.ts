@@ -1,3 +1,4 @@
+import { Localization } from '../localization/localization';
 import { Component, computed, inject } from '@angular/core';
 import { isActive, Router, RouterLink } from '@angular/router';
 
@@ -5,7 +6,7 @@ import { isActive, Router, RouterLink } from '@angular/router';
   selector: 'app-primary-navigation',
   imports: [RouterLink],
   template: `
-    <nav aria-label="Primary">
+    <nav [attr.aria-label]="i18n.text('primary')">
       <ul class="grid grid-cols-3 gap-1 md:flex md:gap-2">
         @for (destination of destinations; track destination.path) {
           <li>
@@ -17,7 +18,7 @@ import { isActive, Router, RouterLink } from '@angular/router';
                      aria-[current]:decoration-2 aria-[current]:underline-offset-4 md:px-4"
               [routerLink]="destination.path"
               [attr.aria-current]="destination.current()"
-            >{{ destination.label }}</a>
+            >{{ i18n.text(destination.label) }}</a>
           </li>
         }
       </ul>
@@ -25,15 +26,16 @@ import { isActive, Router, RouterLink } from '@angular/router';
   `,
 })
 export class PrimaryNavigation {
+  protected readonly i18n = inject(Localization);
   private readonly router = inject(Router);
 
   protected readonly destinations = [
-    this.destination('Overview', '/'),
-    this.destination('Map', '/map', '/beaches'),
-    this.destination('Academy', '/academy', '/academy'),
+    this.destination('overview', '/'),
+    this.destination('map', '/map', '/beaches'),
+    this.destination('academyNav', '/academy', '/academy'),
   ];
 
-  private destination(label: string, path: string, sectionPath?: string) {
+  private destination(label: 'overview' | 'map' | 'academyNav', path: string, sectionPath?: string) {
     const page = isActive(path, this.router, { paths: 'exact' });
     const section = sectionPath && isActive(sectionPath, this.router, { paths: 'subset' });
 

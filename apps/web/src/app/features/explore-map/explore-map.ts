@@ -1,7 +1,7 @@
+import { Localization } from '../../core/localization/localization';
 import {
   afterNextRender, Component, computed, DestroyRef, ElementRef, inject, InjectionToken, viewChild,
 } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { BeachMap } from './beach-map';
@@ -18,10 +18,11 @@ export const EXPLORE_MAP_FIXTURES = new InjectionToken<{
 @Component({
   selector: 'app-explore-map',
   standalone: true,
-  imports: [BeachMap, DatePipe, RouterLink],
+  imports: [BeachMap, RouterLink],
   templateUrl: './explore-map.html',
 })
 export class ExploreMap {
+  protected readonly i18n = inject(Localization);
   private readonly fixtures = inject(EXPLORE_MAP_FIXTURES);
   protected readonly beaches = this.fixtures.beaches;
 
