@@ -4,7 +4,7 @@
 
 **Updated:** 2026-11-24
 
-**Status:** Implementation through AH-019 is merged. AH-020 Weather & Marine Data Feasibility is the next proposed product research task.
+**Status:** Implementation through AH-019 is merged. AH-020 weather and marine feasibility research is complete. [Issue #47](https://github.com/nick-yermak/amber-hunter/issues/47) tracks the repository documentation closeout.
 
 ## Project mission
 Build a polished, public, free-to-use portfolio and learning application for finding favorable amber-hunting conditions on Poland's Baltic coast. Demonstrate Angular, geospatial engineering, data processing, explainable forecasts, quality engineering, and a pragmatic Codex-based AI development harness. Commercial competition and monetization are not primary objectives.
@@ -85,7 +85,7 @@ GitHub reported the remote head refs for PRs #36, #38, #40, #42, and #44 absent 
 
 ## Next product objective
 
-AH-020 Weather & Marine Data Feasibility is the next proposed product research task. See [Current Operational State](../harness/CURRENT_STATE.md) for the next task handoff.
+AH-020 weather and marine feasibility research is complete. The [feasibility assessment](../forecast/AH-020_FEASIBILITY_ASSESSMENT.md) records a Conditional GO for the Owner-approved [Forecast Data Foundation Epic](../forecast/FORECAST_DATA_FOUNDATION_EPIC.md). Source and runtime acceptance remain pending. See [Current Operational State](../harness/CURRENT_STATE.md) for the next task handoff.
 
 ## Documentation rules
 
