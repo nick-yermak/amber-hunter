@@ -1,7 +1,6 @@
-@let current = currentForecast();
-@let hasForecast = current.state === 'ready' || current.state === 'stale';
-@let safety = hasForecast ? current.safety : 'unknown';
-@let showSafetyWarning = hasForecast && safety !== 'clear';
+@let current = regionalForecast;
+@let safety = regional.safety;
+@let showSafetyWarning = safety !== 'clear' && (current || safety !== 'unknown');
 
 <div class="safe-page-gutters mx-auto grid max-w-300 gap-8 py-6 sm:py-8 lg:gap-10">
   <section
@@ -22,10 +21,10 @@
         </aside>
       }
 
-      @if (current.state === 'ready' || current.state === 'stale') {
+      @if (current) {
         <article aria-labelledby="amber-index-heading" class="mt-5 rounded-card bg-surface p-4 sm:p-5">
-          <p class="text-sm text-muted">{{ i18n.text('forecastFor') }} <time [attr.datetime]="current.date">{{ i18n.date(current.date, 'full') }}</time></p>
-          @if (current.state === 'stale') {
+          <p class="text-sm text-muted">{{ i18n.text('forecastFor') }} <time [attr.datetime]="current.validDate">{{ i18n.date(current.validDate, 'full') }}</time></p>
+          @if (current.freshness === 'staleScenario') {
             <p role="status" class="mt-3 rounded-control bg-surface-warm px-3 py-2 font-medium">
               {{ i18n.text('staleHome') }}
             </p>
@@ -40,7 +39,7 @@
               <span aria-hidden="true" class="text-sm text-muted">/ 100</span>
             </div>
             <div>
-              <h2 id="amber-index-heading" class="text-xl font-semibold tracking-tight">{{ i18n.text('index') }}</h2>
+              <h2 id="amber-index-heading" class="text-xl font-semibold tracking-tight">{{ i18n.text('regionalIndex') }}</h2>
               <p class="mt-1 text-sm text-muted">{{ i18n.text('indexHome') }}</p>
               <ul class="mt-2 list-disc space-y-1 ps-5 text-sm">
                 @for (reason of current.reasons; track reason) {
@@ -58,14 +57,14 @@
               <dt class="font-semibold">{{ i18n.text('forecastFreshness') }}</dt>
               <dd class="text-muted">
                 <time [attr.datetime]="current.capturedAt">{{ i18n.date(current.capturedAt, 'warsaw') }}</time>
-                · {{ i18n.text(current.state === 'stale' ? 'outOfWindow' : 'inWindow') }}
+                · {{ i18n.text(current.freshness === 'staleScenario' ? 'outOfWindow' : 'inWindow') }}
               </dd>
             </div>
           </dl>
         </article>
       } @else {
         <div role="status" class="mt-5 rounded-card bg-surface p-5">
-          @switch (current.state) {
+          @switch (regional.forecast.availability === 'unavailable' ? regional.forecast.reason : undefined) {
             @case ('loading') {
               <p class="font-semibold">{{ i18n.text('loadingHome') }}</p>
               <p class="mt-1 text-muted">{{ i18n.text('loadingHomeNote') }}</p>
@@ -100,23 +99,42 @@
     </div>
   </section>
 
-  @if (current.state === 'ready' || current.state === 'stale') {
+  @if (current) {
     <section aria-labelledby="previews-heading">
       <h2 id="previews-heading" class="text-2xl font-semibold tracking-tight">{{ i18n.text('beachPreviews') }}</h2>
       <p class="mt-1 text-sm text-muted">{{ i18n.text('previewsNote') }}</p>
       <ul class="mt-4 grid gap-3 md:grid-cols-3">
-        @for (beach of current.beaches; track beach.name) {
+        @for (beach of beaches; track beach.id) {
           <li class="rounded-card border border-divider bg-surface p-4 sm:p-5">
-            <h3 class="font-semibold">{{ i18n.text(beach.name) }}</h3>
-            <p class="mt-1 text-sm text-muted">{{ i18n.text(beach.safety) }}</p>
-            @if (current.state === 'ready' && current.safety === 'clear' && beach.safety === 'clear') {
-              <p class="mt-3 text-sm">{{ i18n.text('window') }} <span class="block font-semibold tabular-nums">{{ i18n.timeWindow(beach.window.start, beach.window.end, beach.window.zone) }}</span></p>
+            <h3 class="font-semibold">{{ beach.name }}</h3>
+            <p class="mt-1 text-sm text-muted">{{ i18n.text(safetyLabels[beach.safety]) }}</p>
+            @if (beach.forecast; as sample) {
+              <dl class="mt-2 grid gap-1 text-sm">
+                <div>
+                  <dt class="inline font-semibold">{{ i18n.text('indexShort') }}</dt>{{ ' ' }}
+                  <dd class="inline">{{ i18n.number(sample.index) }} / 100</dd>
+                </div>
+                <div>
+                  <dt class="inline font-semibold">{{ i18n.text('sampleConfidence') }}</dt>{{ ' ' }}
+                  <dd class="inline">{{ i18n.text(sample.confidence) }}</dd>
+                </div>
+                <div>
+                  <dt class="font-semibold">{{ i18n.text('sampleFreshness') }}</dt>
+                  <dd>
+                    <span [attr.role]="sample.freshness === 'staleScenario' ? 'status' : null">{{ i18n.text(sample.freshness) }}</span>
+                  </dd>
+                  <dd><time [attr.datetime]="sample.capturedAt">{{ i18n.date(sample.capturedAt, 'warsaw') }}</time></dd>
+                </div>
+              </dl>
+            } @else {
+              <p class="mt-2 text-sm text-muted" role="status">{{ i18n.text('noBeachForecast') }}</p>
+            }
+            @if (beach.window; as window) {
+              <p class="mt-3 text-sm">{{ i18n.text('window') }} <span class="block font-semibold tabular-nums">{{ i18n.timeWindow(window.start, window.end) }}</span></p>
             } @else {
               <p class="mt-3 text-sm font-medium">{{ i18n.text('windowWithheld') }}</p>
             }
           </li>
-        } @empty {
-          <li class="text-muted">{{ i18n.text('emptyPreviews') }}</li>
         }
       </ul>
     </section>

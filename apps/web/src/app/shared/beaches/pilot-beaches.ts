@@ -1,5 +1,7 @@
+export type BeachId = 'sobieszewo' | 'mikoszewo' | 'orle';
+
 export interface Beach {
-  readonly id: string;
+  readonly id: BeachId;
   readonly name: string;
   readonly locality: string;
   readonly localityKey?: 'entrance88';

@@ -4,7 +4,7 @@ import {
   signal, viewChild,
 } from '@angular/core';
 import { AttributionControl, Map, Marker, NavigationControl, setWorkerUrl } from 'maplibre-gl';
-import { Beach } from '../beaches/pilot-beaches';
+import { Beach, BeachId } from '../../shared/beaches/pilot-beaches';
 
 @Component({
   selector: 'app-beach-map',
@@ -15,14 +15,14 @@ import { Beach } from '../beaches/pilot-beaches';
 export class BeachMap {
   protected readonly i18n = inject(Localization);
   readonly beaches = input.required<readonly Beach[]>();
-  readonly selectedId = input.required<string | null>();
-  readonly beachSelected = output<string>();
+  readonly selectedId = input.required<BeachId | null>();
+  readonly beachSelected = output<BeachId>();
   protected readonly state = signal<'loading' | 'ready' | 'error'>('loading');
 
   private readonly container = viewChild.required<ElementRef<HTMLElement>>('canvas');
   private readonly destroyRef = inject(DestroyRef);
   private readonly map = signal<Map | undefined>(undefined);
-  private readonly markers = signal<{ marker: Marker; button: HTMLButtonElement; id: string }[]>([]);
+  private readonly markers = signal<{ marker: Marker; button: HTMLButtonElement; id: BeachId }[]>([]);
   private observer?: ResizeObserver;
 
   constructor() {
@@ -122,7 +122,7 @@ export class BeachMap {
     this.map.set(undefined);
   }
 
-  private updateMarkers(selectedId: string | null): void {
+  private updateMarkers(selectedId: BeachId | null): void {
     for (const { button, id } of this.markers()) {
       button.setAttribute('aria-pressed', String(id === selectedId));
     }
