@@ -5,6 +5,9 @@
   "scripts": {
     "web:start": "corepack pnpm --filter web start",
     "web:build": "corepack pnpm --filter web build",
-    "web:test": "corepack pnpm --filter web test"
+    "web:test": "corepack pnpm --filter web test",
+    "evals:test": "node --test evals/tests/*.test.mts",
+    "evals:preflight": "node evals/runner/cli.mts preflight",
+    "evals:run": "node evals/runner/cli.mts run"
   }
 }
