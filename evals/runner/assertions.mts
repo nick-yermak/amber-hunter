@@ -57,5 +57,10 @@ export function score(evidence: Evidence, results: AssertionResult[], humanRevie
   if (results.some(({ state }) => state === 'fail')) return 'FAIL';
   if (evidence.process.outcome !== 'exit' || evidence.process.exitCode.state !== 'observed' ||
       !evidence.jsonl.complete || results.some(({ state }) => state !== 'pass')) return 'INVALID';
+  const exitCode = evidence.process.exitCode.value;
+  if (exitCode !== 0 && !results.some(({ assertion, state }) =>
+    assertion.kind === 'exit-code' && assertion.expected === exitCode && state === 'pass')) {
+    return 'INVALID';
+  }
   return humanReview ? 'PENDING REVIEW' : 'PASS';
 }

@@ -56,15 +56,15 @@ export function parseJsonl(stdout: string): JsonlEvidence {
       malformedLines.push(index + 1);
     }
   }
-  const terminalEvents = events.filter(({ type }) => type === 'turn.completed' || type === 'turn.failed');
   return {
     events,
     malformedLines,
     unknownTypes: [...unknownTypes],
     complete: malformedLines.length === 0 && unknownTypes.size === 0 &&
       events[0]?.type === 'thread.started' && events[1]?.type === 'turn.started' &&
-      events.at(-1)?.type === 'turn.completed' && terminalEvents.length === 1 &&
-      !events.some(({ type }) => type === 'error'),
+      events.at(-1)?.type === 'turn.completed' &&
+      events.slice(2, -1).every(({ type }) =>
+        type === 'item.started' || type === 'item.updated' || type === 'item.completed'),
   };
 }
 

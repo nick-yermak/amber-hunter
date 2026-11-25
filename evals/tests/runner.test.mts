@@ -180,3 +180,41 @@ test('synthetic evidence stays in the local private run directory and is never o
     await rm(directory, { recursive: true, force: true });
   }
 });
+
+test('unexpected nonzero exit is invalid even when every configured assertion passes', async () => {
+  const nonzero: TraceStep[] = [
+    ...complete.slice(0, -1), { kind: 'exit', atMs: 4, signal: null, code: 1 },
+  ];
+  const mandatory: Expectations['mandatory'] = [{ kind: 'file-unchanged', path: 'inputs/sample.txt' }];
+  for (const humanReview of [false, true]) {
+    const { result } = await runOffline(scenario, { ...expectations, mandatory, humanReview }, {
+      ...replay, steps: nonzero,
+    });
+    assert.equal(result.assertions[0]?.state, 'pass');
+    assert.equal(result.status, 'INVALID');
+  }
+  const expected = await runOffline(scenario, {
+    ...expectations, mandatory: [...mandatory, { kind: 'exit-code', expected: 1 }],
+  }, { ...replay, steps: nonzero });
+  assert.equal(expected.result.status, 'PASS');
+});
+
+test('a second turn start invalidates the run even with passing assertions', async () => {
+  const duplicateStart = stdout.replace(
+    '{"type":"turn.completed"}', '{"type":"turn.started"}\n{"type":"turn.completed"}',
+  );
+  assert.equal(parseJsonl(duplicateStart).complete, false);
+  const withItems = stdout.replace(
+    '{"type":"turn.completed"}', '{"type":"item.started"}\n{"type":"item.completed"}\n{"type":"turn.completed"}',
+  );
+  assert.equal(parseJsonl(withItems).complete, true);
+  const attempt = await runOffline(scenario, expectations, {
+    ...replay,
+    steps: [
+      { kind: 'stdout', atMs: 2, text: duplicateStart },
+      { kind: 'exit', atMs: 4, signal: null, code: 0 },
+    ],
+  });
+  assert.ok(attempt.result.assertions.every(({ state }) => state === 'pass'));
+  assert.equal(attempt.result.status, 'INVALID');
+});
