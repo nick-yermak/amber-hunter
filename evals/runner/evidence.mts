@@ -9,7 +9,7 @@ export type TraceStep =
 export interface ProcessEvidence {
   source: 'synthetic';
   durationMs: number;
-  outcome: 'exit' | 'timeout' | 'interrupted' | 'error' | 'partial';
+  outcome: 'exit' | 'timeout' | 'interrupted' | 'error' | 'partial' | 'invalid';
   exitCode: Observation<number>;
   signal: string | null;
   terminationRequested: boolean;
@@ -82,7 +82,19 @@ export function replayProcess(steps: TraceStep[], timeoutMs: number): ProcessEvi
     stdout: '',
     stderr: '',
   };
-  for (const step of steps) {
+  function invalidTrace(reason: string): ProcessEvidence {
+    return { ...evidence, outcome: 'invalid', exitCode: { state: 'unverified', reason } };
+  }
+
+  for (const [index, step] of steps.entries()) {
+    if (step.kind === 'exit') {
+      const hasCode = Number.isSafeInteger(step.code) && step.code !== null && step.code >= 0 && step.signal === null;
+      const hasSignal = step.code === null && typeof step.signal === 'string' && step.signal.trim().length > 0;
+      if (!hasCode && !hasSignal) return invalidTrace('Exit must report exactly one valid code or signal');
+    }
+    if ((step.kind === 'exit' || step.kind === 'error') && index !== steps.length - 1) {
+      return invalidTrace('Synthetic trace contains events after its terminal record');
+    }
     if (!Number.isSafeInteger(step.atMs) || step.atMs < previous) throw new Error('Invalid synthetic trace time');
     previous = step.atMs;
     if (evidence.outcome === 'partial' && step.atMs >= timeoutMs) {

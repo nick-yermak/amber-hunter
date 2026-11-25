@@ -218,3 +218,34 @@ test('a second turn start invalidates the run even with passing assertions', asy
   assert.ok(attempt.result.assertions.every(({ state }) => state === 'pass'));
   assert.equal(attempt.result.status, 'INVALID');
 });
+
+test('contradictory exits cannot satisfy an exit-code assertion or confirm termination', async () => {
+  const contradictory: TraceStep = { kind: 'exit', atMs: 4, code: 0, signal: 'SIGTERM' };
+  const { result, evidence } = await runOffline(scenario, expectations, {
+    ...replay, steps: [...complete.slice(0, -1), contradictory],
+  });
+  assert.equal(result.status, 'INVALID');
+  assert.equal(evidence.jsonl.complete, true);
+  assert.equal(evidence.process.exitCode.state, 'unverified');
+  assert.equal(result.assertions[0]?.state, 'unverified');
+  const afterTimeout = replayProcess([{ ...contradictory, atMs: 11 }], 10);
+  assert.equal(afterTimeout.outcome, 'invalid');
+  assert.equal(afterTimeout.terminationConfirmed, false);
+});
+
+test('events after process exit or launch error invalidate the synthetic trace', async () => {
+  const trailing: TraceStep = { kind: 'stdout', atMs: 5, text: 'trailing output' };
+  const duplicateExit: TraceStep = { kind: 'exit', atMs: 5, code: 0, signal: null };
+  for (const extra of [trailing, duplicateExit]) {
+    const { result, evidence } = await runOffline(scenario, expectations, {
+      ...replay, steps: [...complete, extra],
+    });
+    assert.equal(result.status, 'INVALID');
+    assert.equal(evidence.jsonl.complete, true);
+    assert.equal(evidence.process.stdout, stdout);
+    assert.equal(evidence.process.exitCode.state, 'unverified');
+  }
+  assert.equal(replayProcess([
+    { kind: 'error', atMs: 1, message: 'synthetic spawn error' }, trailing,
+  ], 10).outcome, 'invalid');
+});

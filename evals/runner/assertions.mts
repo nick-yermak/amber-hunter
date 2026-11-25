@@ -54,6 +54,7 @@ export function evaluate(assertion: Assertion, evidence: Evidence): AssertionRes
 }
 
 export function score(evidence: Evidence, results: AssertionResult[], humanReview: boolean): Status {
+  if (evidence.process.outcome === 'invalid') return 'INVALID';
   if (results.some(({ state }) => state === 'fail')) return 'FAIL';
   if (evidence.process.outcome !== 'exit' || evidence.process.exitCode.state !== 'observed' ||
       !evidence.jsonl.complete || results.some(({ state }) => state !== 'pass')) return 'INVALID';
